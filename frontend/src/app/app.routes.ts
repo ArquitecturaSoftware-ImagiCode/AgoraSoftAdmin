@@ -14,7 +14,7 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 
 export const routes: Routes = [
-  { path: 'singup', component: SignUpPage },
+  { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
   {
     path: 'arquitectura',
