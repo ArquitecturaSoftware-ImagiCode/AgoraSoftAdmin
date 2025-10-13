@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agorasoftadmin-frontend
+  namespace: agorasoftadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agorasoftadmin-frontend
+  template:
+    metadata:
+      labels:
+        app: agorasoftadmin-frontend
+    spec:
+      nodeSelector:
+        agorasoftadmin: "true"
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: frontend
+          image: ghcr.io/arquitecturasoftware-imagicode/agorasoftadmin-frontend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"

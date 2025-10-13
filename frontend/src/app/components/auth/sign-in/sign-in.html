@@ -1,0 +1,54 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200">
+  <form
+    [formGroup]="signInForm"
+    (ngSubmit)="onSubmit()"
+    class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-100"
+  >
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-blue-700">Bienvenido</h1>
+      <p class="text-gray-500 mt-2">Inicia sesión para continuar</p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+      <input
+        type="email"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        placeholder="correo@email.com"
+        formControlName="correo"
+      />
+      <p class="text-sm mt-1 text-red-500" *ngIf="submitted && f['correo'].errors">
+        <span *ngIf="f['correo'].errors['required']">El correo es obligatorio</span>
+        <span *ngIf="f['correo'].errors['email']">Formato de correo inválido</span>
+      </p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+      <input
+        type="password"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        placeholder="•••••••"
+        formControlName="contrasena"
+      />
+      <p class="text-sm mt-1 text-red-500" *ngIf="submitted && f['contrasena'].errors">
+        <span *ngIf="f['contrasena'].errors['required']">La contraseña es obligatoria</span>
+        <span *ngIf="f['contrasena'].errors['minlength']">Mínimo 6 caracteres</span>
+      </p>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-blue-700 transition-all"
+    >
+      Iniciar sesión
+    </button>
+
+    <div class="flex justify-center items-center gap-2 text-sm text-gray-600 mt-3">
+      <p>¿No tienes cuenta?</p>
+      <a routerLink="/register" class="text-blue-700 font-medium hover:underline">
+        Crear cuenta
+      </a>
+    </div>
+  </form>
+</div>

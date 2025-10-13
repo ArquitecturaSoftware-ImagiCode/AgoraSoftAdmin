@@ -1,0 +1,147 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-200 via-sky-200 to-pink-200"
+  *ngIf="step === 'register'"
+>
+  <form
+    [formGroup]="signUpForm"
+    (ngSubmit)="onSubmit()"
+    class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl border border-gray-100 space-y-6"
+  >
+    <div class="text-center">
+      <h1 class="text-4xl font-extrabold text-indigo-700">Crea tu cuenta</h1>
+      <p class="text-gray-500 mt-2 text-sm">Completa todos los campos para registrarte.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+        <input
+          type="text"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          placeholder="Juan"
+          formControlName="nombre"
+        />
+        <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['nombre'].errors">
+          Nombre es obligatorio
+        </p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+        <input
+          type="text"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          placeholder="Pérez"
+          formControlName="apellido"
+        />
+        <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['apellido'].errors">
+          Apellido es obligatorio
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Organización</label>
+        <select
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          formControlName="organizacion"
+        >
+          <option disabled value="">Selecciona organización</option>
+          <option *ngFor="let org of organizaciones" [value]="org">{{ org }}</option>
+        </select>
+        <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['organizacion'].errors">
+          Organización es obligatoria
+        </p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+        <select
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          formControlName="rol"
+        >
+          <option disabled value="">Selecciona rol</option>
+          <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+        </select>
+        <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['rol'].errors">
+          Rol es obligatorio
+        </p>
+      </div>
+    </div>
+  
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+      <input
+        type="email"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        placeholder="correo@email.com"
+        formControlName="correo"
+      />
+      <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['correo'].errors">
+        <span *ngIf="f['correo'].errors['required']">Correo es obligatorio</span>
+        <span *ngIf="f['correo'].errors['email']">Formato de correo inválido</span>
+      </p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+      <input
+        type="password"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        placeholder="••••••"
+        formControlName="contrasena"
+      />
+      <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['contrasena'].errors">
+        <span *ngIf="f['contrasena'].errors['required']">Contraseña es obligatoria</span>
+        <span *ngIf="f['contrasena'].errors['minlength']">Mínimo 6 caracteres</span>
+      </p>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+    >
+      Registrarse
+    </button>
+
+    <div class="flex justify-center items-center gap-2 text-sm text-gray-600">
+      <p>¿Ya tienes cuenta?</p>
+      <a routerLink="/login" class="text-indigo-700 font-medium hover:underline">
+        Inicia sesión
+      </a>
+    </div>
+  </form>
+</div>
+
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-200 via-sky-200 to-pink-200"
+  *ngIf="step === 'verify'"
+>
+  <form
+    class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md border border-gray-100 space-y-6"
+    (ngSubmit)="onVerify()"
+  >
+    <div class="text-center">
+      <h1 class="text-3xl font-extrabold text-indigo-700">Verifica tu correo</h1>
+      <p class="text-gray-500 text-sm mt-2">Ingresa el código que enviamos a tu correo.</p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Código de verificación</label>
+      <input
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        type="number"
+        [(ngModel)]="code"
+        name="code"
+        placeholder="ej. 394871"
+        required
+      />
+    </div>
+
+    <button
+      class="w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-all"
+      type="submit"
+    >
+      Verificar
+    </button>
+  </form>
+</div>
