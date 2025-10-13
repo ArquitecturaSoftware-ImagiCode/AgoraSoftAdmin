@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AuditoriaLayout } from './auditoria-layout';
+import { SoporteLayout } from './soporte-layout';
 
-describe('AuditoriaLayout', () => {
-  let component: AuditoriaLayout;
-  let fixture: ComponentFixture<AuditoriaLayout>;
+describe('SoporteLayout', () => {
+  let component: SoporteLayout;
+  let fixture: ComponentFixture<SoporteLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuditoriaLayout]
+      imports: [SoporteLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AuditoriaLayout);
+    fixture = TestBed.createComponent(SoporteLayout);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

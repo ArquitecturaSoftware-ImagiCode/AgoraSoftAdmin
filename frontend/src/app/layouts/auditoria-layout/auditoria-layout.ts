@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { BriefcaseBusiness, ChartBarIcon, CircleDollarSign, Key, LayoutDashboard, LogOut, LucideAngularModule, NotebookText, User, Users } from 'lucide-angular';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-auditor-layout',
+  selector: 'app-auditoria-layout',
   imports: [RouterOutlet, LucideAngularModule],
-  templateUrl: './auditor-layout.html',
-  styleUrl: './auditor-layout.css'
+  templateUrl: './auditoria-layout.html',
+  styleUrl: './auditoria-layout.css'
 })
-export class AuditorLayout {
-  readonly DashboardIcon = LayoutDashboard;
+export class AuditoriaLayout {
+    readonly DashboardIcon = LayoutDashboard;
   readonly ProjectIcon = NotebookText;
   readonly ProfileIcon = User;
   readonly ApplicantsIcon = Users;
@@ -22,8 +22,10 @@ export class AuditorLayout {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+
   async cerrarSesion() {
     await this.authService.signOut();
     this.router.navigate(['/login']);
   }
+
 }

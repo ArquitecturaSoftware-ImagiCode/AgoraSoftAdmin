@@ -20,7 +20,7 @@ import {environment} from '../../../../environments/environments';
 })
 export class SignUp {
   signUpForm: FormGroup;
-  roles = ['arquitectura', 'auditor', 'tesoreria'];
+  roles = ['arquitectura', 'auditoria', 'tesoreria', 'planeacion', 'soporte'];
   organizaciones = ['Corabastos', 'La concordia', '7 de Agosto'];
   submitted = false;
   step: 'register' | 'verify' = 'register';

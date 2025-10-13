@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import axios from 'axios';
 import { CommonModule, JsonPipe } from '@angular/common';
 import {environment} from '../../../../environments/environments';
 
 @Component({
-  selector: 'app-arquitectura-dashboard',
+  selector: 'app-planeacion-dashboard',
   imports: [JsonPipe, CommonModule],
-  templateUrl: './arquitectura-dashboard.html',
-  styleUrl: './arquitectura-dashboard.css',
+  templateUrl: './planeacion-dashboard.html',
+  styleUrl: './planeacion-dashboard.css'
 })
-export class ArquitecturaDashboard implements OnInit {
+export class PlaneacionDashboard implements OnInit {
   token: string = '';
   usuario: any = null;
 

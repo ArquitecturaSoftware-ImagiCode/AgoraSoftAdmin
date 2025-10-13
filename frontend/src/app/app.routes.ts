@@ -4,10 +4,14 @@ import { SignInPage } from './pages/auth/sign-in-page/sign-in-page';
 import { ArquitecturaLayout } from './layouts/arquitectura-layout/arquitectura-layout';
 import { AuthGuard } from './services/auth.guard';
 import { ArquitecturaDashboard } from './pages/arquitectura/arquitectura-dashboard/arquitectura-dashboard';
-import { AuditoriaDashboard } from './pages/auditoria/auditoria-dashboard/auditoria-dashboard';
 import { TesoreriaDashboard } from './pages/tesoreria/tesoreria-dashboard/tesoreria-dashboard';
+import { AuditoriaDashboard } from './pages/auditoria/auditoria-dashboard/auditoria-dashboard';
+import { PlaneacionDashboard } from './pages/planeacion/planeacion-dashboard/planeacion-dashboard';
+import { SoporteDashboard } from './pages/soporte/soporte-dashboard/soporte-dashboard';
 import { AuditoriaLayout } from './layouts/auditoria-layout/auditoria-layout';
 import { TesoreriaLayout } from './layouts/tesoreria-layout/tesoreria-layout';
+import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout';
+import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 
 export const routes: Routes = [
   { path: 'singup', component: SignUpPage },
@@ -25,14 +29,38 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'auditor',
-    component: AuditorLayout,
+    path: 'auditoria',
+    component: AuditoriaLayout,
     canActivate: [AuthGuard],
-    data: { role: 'auditor' },
+    data: { role: 'auditoria' },
     children: [
       {
         path: 'dashboard',
-        component: AuditorDashboard,
+        component: AuditoriaDashboard,
+      },
+    ],
+  },
+  {
+    path: 'planeacion',
+    component: PlaneacionLayout,
+    canActivate: [AuthGuard],
+    data: { role: 'planeacion' },
+    children: [
+      {
+        path: 'dashboard',
+        component: PlaneacionDashboard,
+      },
+    ],
+  },
+  {
+    path: 'soporte',
+    component: SoporteLayout,
+    canActivate: [AuthGuard],
+    data: { role: 'soporte' },
+    children: [
+      {
+        path: 'dashboard',
+        component: SoporteDashboard,
       },
     ],
   },
