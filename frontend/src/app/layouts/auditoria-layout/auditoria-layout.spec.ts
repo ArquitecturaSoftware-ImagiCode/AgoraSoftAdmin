@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperadorLayout } from './operador-layout';
+import { AuditorLayout } from './auditoria-layout';
 
-describe('OperadorLayout', () => {
-  let component: OperadorLayout;
-  let fixture: ComponentFixture<OperadorLayout>;
+describe('AuditorLayout', () => {
+  let component: AuditorLayout;
+  let fixture: ComponentFixture<AuditorLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OperadorLayout]
+      imports: [AuditorLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OperadorLayout);
+    fixture = TestBed.createComponent(AuditorLayout);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

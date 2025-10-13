@@ -4,13 +4,13 @@ import { BriefcaseBusiness, ChartBarIcon, CircleDollarSign, Key, LayoutDashboard
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-comercial-layout',
+  selector: 'app-tesoreria-layout',
   imports: [RouterOutlet, LucideAngularModule],
-  templateUrl: './comercial-layout.html',
-  styleUrl: './comercial-layout.css'
+  templateUrl: './tesoreria-layout.html',
+  styleUrl: './tesoreria-layout.css'
 })
-export class ComercialLayout {
-   readonly DashboardIcon = LayoutDashboard;
+export class TesoreriaLayout {
+    readonly DashboardIcon = LayoutDashboard;
   readonly ProjectIcon = NotebookText;
   readonly ProfileIcon = User;
   readonly ApplicantsIcon = Users;
@@ -27,4 +27,5 @@ export class ComercialLayout {
     await this.authService.signOut();
     this.router.navigate(['/login']);
   }
+
 }

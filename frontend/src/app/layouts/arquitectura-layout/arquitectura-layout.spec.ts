@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OperadorDashboard } from './operador-dashboard';
+import { ArquitecturaLayout } from './arquitectura-layout';
 
-describe('OperadorDashboard', () => {
-  let component: OperadorDashboard;
-  let fixture: ComponentFixture<OperadorDashboard>;
+describe('ArquitecturaLayout', () => {
+  let component: ArquitecturaLayout;
+  let fixture: ComponentFixture<ArquitecturaLayout>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OperadorDashboard]
+      imports: [ArquitecturaLayout]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(OperadorDashboard);
+    fixture = TestBed.createComponent(ArquitecturaLayout);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

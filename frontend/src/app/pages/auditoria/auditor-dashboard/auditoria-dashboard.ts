@@ -4,12 +4,12 @@ import { CommonModule, JsonPipe } from '@angular/common';
 import {environment} from '../../../../environments/environments';
 
 @Component({
-  selector: 'app-operador-dashboard',
+  selector: 'app-auditor-dashboard',
   imports: [JsonPipe, CommonModule],
-  templateUrl: './operador-dashboard.html',
-  styleUrl: './operador-dashboard.css'
+  templateUrl: './auditor-dashboard.html',
+  styleUrl: './auditor-dashboard.css'
 })
-export class OperadorDashboard implements OnInit {
+export class AuditorDashboard implements OnInit {
   token: string = '';
   usuario: any = null;
 
@@ -45,3 +45,4 @@ export class OperadorDashboard implements OnInit {
     }
   }
 }
+

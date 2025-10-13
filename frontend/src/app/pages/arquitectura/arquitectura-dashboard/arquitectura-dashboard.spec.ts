@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ComercialLayout } from './comercial-layout';
+import { ComercialDashboard } from './arquitectura-dashboard';
 
-describe('ComercialLayout', () => {
-  let component: ComercialLayout;
-  let fixture: ComponentFixture<ComercialLayout>;
+describe('ComercialDashboard', () => {
+  let component: ComercialDashboard;
+  let fixture: ComponentFixture<ComercialDashboard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ComercialLayout]
+      imports: [ComercialDashboard]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ComercialLayout);
+    fixture = TestBed.createComponent(ComercialDashboard);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

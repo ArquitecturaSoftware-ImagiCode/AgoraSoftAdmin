@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { BriefcaseBusiness, ChartBarIcon, CircleDollarSign, Key, LayoutDashboard, LogOut, LucideAngularModule, NotebookText, User, Users } from 'lucide-angular';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-proveedor-layout',
+  selector: 'app-arquitectura-layout',
   imports: [RouterOutlet, LucideAngularModule],
-  templateUrl: './proveedor-layout.html',
-  styleUrl: './proveedor-layout.css'
+  templateUrl: './arquitectura-layout.html',
+  styleUrl: './arquitectura-layout.css'
 })
-export class ProveedorLayout {
-  readonly DashboardIcon = LayoutDashboard;
+export class ArquitecturaLayout {
+   readonly DashboardIcon = LayoutDashboard;
   readonly ProjectIcon = NotebookText;
   readonly ProfileIcon = User;
   readonly ApplicantsIcon = Users;
@@ -21,6 +21,7 @@ export class ProveedorLayout {
   readonly FreelancersIcon = BriefcaseBusiness;
 
   constructor(private authService: AuthService, private router: Router) {}
+
 
   async cerrarSesion() {
     await this.authService.signOut();

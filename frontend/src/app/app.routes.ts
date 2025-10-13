@@ -1,50 +1,50 @@
 import { Routes } from '@angular/router';
 import { SignUpPage } from './pages/auth/sign-up-page/sign-up-page';
 import { SignInPage } from './pages/auth/sign-in-page/sign-in-page';
-import { ComercialLayout } from './layouts/comercial-layout/comercial-layout';
+import { ArquitecturaLayout } from './layouts/arquitectura-layout/arquitectura-layout';
 import { AuthGuard } from './services/auth.guard';
-import { ComercialDashboard } from './pages/comercial/comercial-dashboard/comercial-dashboard';
-import { ProveedorDashboard } from './pages/proveedor/proveedor-dashboard/proveedor-dashboard';
-import { OperadorDashboard } from './pages/operador/operador-dashboard/operador-dashboard';
-import { ProveedorLayout } from './layouts/proveedor-layout/proveedor-layout';
-import { OperadorLayout } from './layouts/operador-layout/operador-layout';
+import { ArquitecturaDashboard } from './pages/arquitectura/arquitectura-dashboard/arquitectura-dashboard';
+import { AuditoriaDashboard } from './pages/auditoria/auditoria-dashboard/auditoria-dashboard';
+import { TesoreriaDashboard } from './pages/tesoreria/tesoreria-dashboard/tesoreria-dashboard';
+import { AuditoriaLayout } from './layouts/auditoria-layout/auditoria-layout';
+import { TesoreriaLayout } from './layouts/tesoreria-layout/tesoreria-layout';
 
 export const routes: Routes = [
   { path: 'singup', component: SignUpPage },
   { path: 'login', component: SignInPage },
   {
-    path: 'comercial',
-    component: ComercialLayout,
+    path: 'arquitectura',
+    component: ArquitecturaLayout,
     canActivate: [AuthGuard],
-    data: { role: 'comercial' },
+    data: { role: 'arquitectura' },
     children: [
       {
         path: 'dashboard',
-        component: ComercialDashboard,
+        component: ArquitecturaDashboard,
       },
     ],
   },
   {
-    path: 'proveedor',
-    component: ProveedorLayout,
+    path: 'auditor',
+    component: AuditorLayout,
     canActivate: [AuthGuard],
-    data: { role: 'proveedor' },
+    data: { role: 'auditor' },
     children: [
       {
         path: 'dashboard',
-        component: ProveedorDashboard,
+        component: AuditorDashboard,
       },
     ],
   },
   {
-    path: 'operador',
-    component: OperadorLayout,
+    path: 'tesoreria',
+    component: TesoreriaLayout,
     canActivate: [AuthGuard],
-    data: { role: 'operador' },
+    data: { role: 'tesoreria' },
     children: [
       {
         path: 'dashboard',
-        component: OperadorDashboard,
+        component: TesoreriaDashboard,
       },
     ],
   },

@@ -4,12 +4,12 @@ import { CommonModule, JsonPipe } from '@angular/common';
 import {environment} from '../../../../environments/environments';
 
 @Component({
-  selector: 'app-proveedor-dashboard',
+  selector: 'app-tesoreria-dashboard',
   imports: [JsonPipe, CommonModule],
-  templateUrl: './proveedor-dashboard.html',
-  styleUrl: './proveedor-dashboard.css'
+  templateUrl: './tesoreria-dashboard.html',
+  styleUrl: './tesoreria-dashboard.css'
 })
-export class ProveedorDashboard implements OnInit {
+export class TesoreriaDashboard implements OnInit {
   token: string = '';
   usuario: any = null;
 
@@ -45,4 +45,3 @@ export class ProveedorDashboard implements OnInit {
     }
   }
 }
-
