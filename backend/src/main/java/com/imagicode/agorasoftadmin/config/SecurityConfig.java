@@ -16,11 +16,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            )
-            .cors(cors -> {}); // habilita CORS con el bean de abajo
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll())
+                .cors(cors -> {
+                }); // habilita CORS con el bean de abajo
 
         return http.build();
     }
@@ -33,13 +33,15 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://10.43.103.209",
                 "http://10.43.103.209:80",
+                "http://10.43.103.209:4200",
                 "http://localhost:8085",
                 "http://localhost:4200",
-                "https://tu-dominio.com"
-        ));
+                "http://localhost:3000",
+                "https://tu-dominio.com"));
 
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true); // ahora sí válido
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
