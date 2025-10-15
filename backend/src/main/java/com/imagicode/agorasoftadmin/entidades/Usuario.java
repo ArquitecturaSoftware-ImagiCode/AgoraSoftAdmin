@@ -12,7 +12,11 @@ public class Usuario {
     private String id; // Se debe pasar manualmente
 
     private String nombre;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plaza_id")
     private Plaza plaza;
+
     private String apellido;
     private String passwordHash;
     private String correo;

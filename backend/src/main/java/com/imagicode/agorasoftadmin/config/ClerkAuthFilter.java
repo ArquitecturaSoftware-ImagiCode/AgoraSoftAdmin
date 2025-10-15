@@ -21,6 +21,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+import java.util.Arrays;
+
+
 @Component
 public class ClerkAuthFilter implements Filter {
 
@@ -45,7 +49,7 @@ public class ClerkAuthFilter implements Filter {
 
         String token = authHeader.substring(7);
         System.out.println("[ClerkAuthFilter] Token length: " + token.length());
-        
+
         // 🔹 Extraer headers para Clerk
         Map<String, List<String>> headers = new HashMap<>();
         Enumeration<String> headerNames = httpRequest.getHeaderNames();
@@ -61,13 +65,13 @@ public class ClerkAuthFilter implements Filter {
                     headers,
                     AuthenticateRequestOptions
                             .secretKey("sk_test_GNj2mKLiTHeAdLs1kF7RR0vvVZ2dzVGrVgiGIrqsVF")
-                            .authorizedParty("http://10.43.103.209") // ⚠️ Verifica esto
+                            .authorizedParties(Arrays.asList("http://10.43.103.209", "http://localhost:8085", "http://127.0.0.1", "http://10.43.102.15","https://1cb8343a3c8d.ngrok-free.app","http://localhost:30080","http://127.0.0.1:4040"))
                             .build()
             );
 
             System.out.println("[ClerkAuthFilter] ¿Está autenticado Clerk? " + requestState.isSignedIn());
             System.out.println("[ClerkAuthFilter] Reason: " + requestState.reason());
-            
+
             if (!requestState.isSignedIn()) {
                 System.out.println("[ClerkAuthFilter] Token rechazado por Clerk. Reason: " + requestState.reason());
                 httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Clerk token inválido: " + requestState.reason());
