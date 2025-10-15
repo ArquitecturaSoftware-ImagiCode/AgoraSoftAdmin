@@ -13,6 +13,10 @@ import { TesoreriaLayout } from './layouts/tesoreria-layout/tesoreria-layout';
 import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout';
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 
+
+import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
+import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
+
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
@@ -25,6 +29,14 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: ArquitecturaDashboard,
+      },
+      
+      {
+        path: 'empleados',
+        children: [
+          { path: 'registro', component: RegistroEmpleadoComponent },
+          { path: 'lista', component: ListaEmpleadosComponent },
+        ],
       },
     ],
   },
