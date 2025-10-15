@@ -1,8 +1,0 @@
-.page { padding:16px; background:#fff; border-radius:8px; }
-.page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.actions input { padding:8px; border-radius:6px; border:1px solid #e5e7eb; }
-.list .item { display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #f3f4f6; align-items:center; }
-.meta { color:#6b7280; font-size:13px; }
-.status { padding:6px 10px; border-radius:999px; background:#f3f4f6; }
-.status.active { background:#10b981; color:#fff; }
-.empty { padding:16px; text-align:center; color:#9ca3af; }
