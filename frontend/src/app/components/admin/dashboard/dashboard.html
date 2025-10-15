@@ -1,0 +1,60 @@
+<app-header title="Dashboard Administrativo" subtitle="Resumen general del sistema"></app-header>
+
+<div *ngIf="loading" class="loading">Cargando estadísticas...</div>
+
+<div *ngIf="error" class="error">
+  <p>{{ error }}</p>
+  <button (click)="cargarEstadisticas()">Reintentar</button>
+</div>
+
+<div *ngIf="!loading && estadisticas" class="dashboard-grid">
+  <section class="cards">
+    <div class="card" (click)="navegarA('/admin/plazas')">
+      <div class="card-title">Total Plazas</div>
+      <div class="card-value">{{ estadisticas.totalPlazas }}</div>
+      <div class="card-sub">{{ estadisticas.plazasActivas }} activas ({{ porcentajePlazasActivas | number:'1.0-0' }}%)</div>
+    </div>
+
+    <div class="card alert" (click)="navegarA('/admin/plazas/pendientes')">
+      <div class="card-title">Plazas Pendientes</div>
+      <div class="card-value">{{ estadisticas.plazasPendientes }}</div>
+      <div class="card-sub">Requieren revisión</div>
+    </div>
+
+    <div class="card" (click)="navegarA('/admin/empleados')">
+      <div class="card-title">Total Empleados</div>
+      <div class="card-value">{{ estadisticas.totalEmpleados }}</div>
+      <div class="card-sub">{{ estadisticas.empleadosActivos }} activos</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ingresos Mensuales</div>
+      <div class="card-value">{{ formatCurrency(estadisticas.ingresosMensuales) }}</div>
+      <div class="card-sub">Suscripciones activas</div>
+    </div>
+  </section>
+
+  <section class="lists">
+    <div class="panel">
+      <h3>Últimas Plazas</h3>
+      <div *ngIf="estadisticas.ultimasPlazasRegistradas?.length; else emptyPlazas">
+        <div *ngFor="let p of estadisticas.ultimasPlazasRegistradas" class="list-item">
+          <div class="left">{{ p.nombre }}</div>
+          <div class="right">{{ p.fechaRegistro | date:'short' }}</div>
+        </div>
+      </div>
+      <ng-template #emptyPlazas><p class="empty">No hay plazas recientes</p></ng-template>
+    </div>
+
+    <div class="panel">
+      <h3>Plazas con Pagos Vencidos</h3>
+      <div *ngIf="estadisticas.plazasConPagosVencidos?.length; else emptyPagos">
+        <div *ngFor="let pv of estadisticas.plazasConPagosVencidos" class="list-item alert">
+          <div class="left">{{ pv.nombre }}</div>
+          <div class="right">{{ pv.planSuscripcion || '-' }}</div>
+        </div>
+      </div>
+      <ng-template #emptyPagos><p class="empty">No hay pagos vencidos</p></ng-template>
+    </div>
+  </section>
+</div>
