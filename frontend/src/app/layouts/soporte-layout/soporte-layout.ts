@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BriefcaseBusiness, ChartBarIcon, CircleDollarSign, Key, LayoutDashboard, LogOut, LucideAngularModule, NotebookText, User, Users } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-soporte-layout',
-  imports: [RouterOutlet, LucideAngularModule],
+  imports: [RouterOutlet, RouterLink, LucideAngularModule],
   templateUrl: './soporte-layout.html',
   styleUrl: './soporte-layout.css'
 })

@@ -1,23 +1,23 @@
 <div class="registro-container">
-  <h2>Registro de Empleado</h2>
-  <form [formGroup]="empleadoForm" (ngSubmit)="registrarEmpleado()">
-    <label>Nombre:</label>
-    <input formControlName="nombre" type="text" />
-
-    <label>Apellido:</label>
-    <input formControlName="apellido" type="text" />
-
-    <label>Correo:</label>
-    <input formControlName="correo" type="email" />
-
-    <label>Teléfono:</label>
-    <input formControlName="telefono" type="text" />
-
-    <label>Rol:</label>
-    <input formControlName="rol" type="text" />
-
-    <button type="submit">Registrar</button>
-  </form>
-
-  <p>{{ mensaje }}</p>
-</div>
+    <h2>Registro de Empleado</h2>
+    <form [formGroup]="empleadoForm" (ngSubmit)="registrarEmpleado()">
+      <label>Nombre:</label>
+      <input formControlName="nombre" type="text" />
+  
+      <label>Apellido:</label>
+      <input formControlName="apellido" type="text" />
+  
+      <label>Correo:</label>
+      <input formControlName="correo" type="email" />
+  
+      <label>Teléfono:</label>
+      <input formControlName="telefono" type="text" />
+  
+      <label>Rol:</label>
+      <input formControlName="rol" type="text" />
+  
+      <button type="submit">Registrar</button>
+    </form>
+  
+    <p>{{ mensaje }}</p>
+  </div>

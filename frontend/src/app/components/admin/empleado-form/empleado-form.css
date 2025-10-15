@@ -1,8 +1,0 @@
-.form-page { background:#fff; padding:16px; border-radius:8px; }
-.row { display:flex; flex-direction:column; margin-bottom:10px; }
-.row label { font-weight:600; margin-bottom:6px; }
-.row input, row select { padding:8px; border:1px solid #e5e7eb; border-radius:6px; }
-.form-actions { display:flex; gap:8px; margin-top:12px; }
-.btn { padding:8px 12px; border-radius:6px; border:1px solid #e5e7eb; background:#fff; }
-.btn.primary { background:#1e40af; color:#fff; border:none; }
-.error { color:#b91c1c; margin-top:8px; }

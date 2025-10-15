@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { BriefcaseBusiness, ChartBarIcon, CircleDollarSign, Key, LayoutDashboard, LogOut, LucideAngularModule, NotebookText, User, Users } from 'lucide-angular';
 
 @Component({
   selector: 'app-planeacion-layout',
-  imports: [RouterOutlet, LucideAngularModule],
+  imports: [RouterOutlet, RouterLink, LucideAngularModule],
   templateUrl: './planeacion-layout.html',
   styleUrl: './planeacion-layout.css'
 })
