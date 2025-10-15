@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EmpleadoService } from '../../../services/empleado.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  imports: [CommonModule, ReactiveFormsModule],
   selector: 'app-registro-empleado',
   templateUrl: './registro-empleado.component.html',
   styleUrls: ['./registro-empleado.component.css']

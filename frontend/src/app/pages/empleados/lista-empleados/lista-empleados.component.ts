@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Empleado, EmpleadoService } from '../../../services/empleado.service';
+import { EmpleadoService } from '../../../services/empleado.service';
+import { Empleado } from '../../../models/empleado.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lista-empleados',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './lista-empleados.component.html',
   styleUrls: ['./lista-empleados.component.css']
 })

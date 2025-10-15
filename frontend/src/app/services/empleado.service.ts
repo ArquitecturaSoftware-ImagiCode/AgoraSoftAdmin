@@ -1,23 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Empleado, CrearEmpleadoDTO, ActualizarEmpleadoDTO, RolEmpleado } from '../models/empleado.model';
+import {
+  Empleado,
+  CrearEmpleadoDTO,
+  ActualizarEmpleadoDTO,
+  RolEmpleado,
+} from '../models/empleado.model';
 import { environment } from '../../environments/environments';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EmpleadoService {
-  private apiUrl = `${environment.apiBaseUrl}/admin/empleados`;
+  private apiUrl = 'http://localhost:8080/api/empleados';
 
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('clerk_token');
+    const token = localStorage.getItem('clerk_token'); // o el nombre que uses
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
+  }
+
+  getEmpleados(): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(this.apiUrl);
+  }
+
+  crearEmpleado(empleado: Empleado): Observable<Empleado> {
+    return this.http.post<Empleado>(this.apiUrl, empleado);
   }
 
   // Obtener todos los empleados
@@ -42,22 +55,34 @@ export class EmpleadoService {
 
   // Actualizar empleado
   actualizar(id: number, empleado: ActualizarEmpleadoDTO): Observable<Empleado> {
-    return this.http.put<Empleado>(`${this.apiUrl}/${id}`, empleado, { headers: this.getHeaders() });
+    return this.http.put<Empleado>(`${this.apiUrl}/${id}`, empleado, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Desactivar empleado
   desactivar(id: number): Observable<Empleado> {
-    return this.http.post<Empleado>(`${this.apiUrl}/${id}/desactivar`, {}, { headers: this.getHeaders() });
+    return this.http.post<Empleado>(
+      `${this.apiUrl}/${id}/desactivar`,
+      {},
+      { headers: this.getHeaders() }
+    );
   }
 
   // Activar empleado
   activar(id: number): Observable<Empleado> {
-    return this.http.post<Empleado>(`${this.apiUrl}/${id}/activar`, {}, { headers: this.getHeaders() });
+    return this.http.post<Empleado>(
+      `${this.apiUrl}/${id}/activar`,
+      {},
+      { headers: this.getHeaders() }
+    );
   }
 
   // Buscar empleados
   buscar(termino: string): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(`${this.apiUrl}/buscar?q=${termino}`, { headers: this.getHeaders() });
+    return this.http.get<Empleado[]>(`${this.apiUrl}/buscar?q=${termino}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   // Obtener empleados activos
@@ -72,6 +97,8 @@ export class EmpleadoService {
 
   // Obtener por departamento
   obtenerPorDepartamento(departamento: string): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(`${this.apiUrl}/departamento/${departamento}`, { headers: this.getHeaders() });
+    return this.http.get<Empleado[]>(`${this.apiUrl}/departamento/${departamento}`, {
+      headers: this.getHeaders(),
+    });
   }
 }
