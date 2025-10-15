@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { EmpleadoService } from '../../services/empleado.service';
-import { Empleado } from '../../models/empleado.model';
+import { RouterModule, Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
-import { Inject } from '@angular/core';
+import { EmpleadoService } from '../../../services/empleado.service';
+import { Empleado } from '../../../models/empleado.model';
 
 interface MenuItem {
   icon: string;
@@ -18,7 +17,7 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,],
   templateUrl: './sidebar.html',
   styleUrls: ['./sidebar.css']
 })
@@ -31,8 +30,8 @@ export class SidebarComponent implements OnInit {
     { icon: 'view_module', label: 'Gestión de Módulos', route: '/admin/modulos', active: false, permission: 'MANAGE_MODULES' },
     { icon: 'pending_actions', label: 'Plazas Pendientes', route: '/admin/plazas/pendientes', active: false, permission: 'APPROVE_PLAZAS', badge: 0 }
   ];
-  constructor(private router: Router, @Inject(EmpleadoService) private empleadoService: EmpleadoService) {}
 
+  constructor(private router: Router, private empleadoService: EmpleadoService) {}
 
   ngOnInit(): void {
     this.cargarEmpleadoActual();
@@ -56,8 +55,6 @@ export class SidebarComponent implements OnInit {
 
   private filtrarMenuPorPermisos(): void {
     if (!this.empleadoActual) return;
-
-    // Mantiene solo items permitidos por rol
     this.menuItems = this.menuItems.filter(item => {
       if (!item.permission) return true;
       return this.tienePermiso(item.permission);
@@ -66,13 +63,11 @@ export class SidebarComponent implements OnInit {
 
   tienePermiso(permiso: string): boolean {
     if (!this.empleadoActual || !this.empleadoActual.rol) return false;
-
     const mapPermisos: Record<string, string[]> = {
       SUPER_ADMIN: ['FULL_ACCESS', 'MANAGE_EMPLOYEES', 'MANAGE_PLAZAS', 'MANAGE_MODULES', 'APPROVE_PLAZAS'],
       ADMIN: ['MANAGE_PLAZAS', 'APPROVE_PLAZAS', 'VIEW_EMPLOYEES'],
       SOPORTE: ['VIEW_PLAZAS']
     };
-
     const permisosRol = mapPermisos[this.empleadoActual.rol as keyof typeof mapPermisos] ?? [];
     return permisosRol.includes(permiso) || permisosRol.includes('FULL_ACCESS');
   }
@@ -84,7 +79,6 @@ export class SidebarComponent implements OnInit {
 
   cerrarSesion(): void {
     localStorage.removeItem('clerk_token');
-    // opcional: limpiar otros datos
     this.router.navigate(['/login']);
   }
 }

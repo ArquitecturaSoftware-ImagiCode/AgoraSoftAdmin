@@ -12,7 +12,9 @@
     <div class="card" (click)="navegarA('/admin/plazas')">
       <div class="card-title">Total Plazas</div>
       <div class="card-value">{{ estadisticas.totalPlazas }}</div>
-      <div class="card-sub">{{ estadisticas.plazasActivas }} activas ({{ porcentajePlazasActivas | number:'1.0-0' }}%)</div>
+      <div class="card-sub">
+        {{ estadisticas.plazasActivas }} activas ({{ porcentajePlazasActivas | number : '1.0-0' }}%)
+      </div>
     </div>
 
     <div class="card alert" (click)="navegarA('/admin/plazas/pendientes')">
@@ -29,7 +31,9 @@
 
     <div class="card">
       <div class="card-title">Ingresos Mensuales</div>
-      <div class="card-value">{{ formatCurrency(estadisticas.ingresosMensuales) }}</div>
+      <div class="card-value">
+        {{ estadisticas.ingresosMensuales | currency : 'COP' : 'symbol' : '1.0-0' }}
+      </div>
       <div class="card-sub">Suscripciones activas</div>
     </div>
   </section>
@@ -40,7 +44,7 @@
       <div *ngIf="estadisticas.ultimasPlazasRegistradas?.length; else emptyPlazas">
         <div *ngFor="let p of estadisticas.ultimasPlazasRegistradas" class="list-item">
           <div class="left">{{ p.nombre }}</div>
-          <div class="right">{{ p.fechaRegistro | date:'short' }}</div>
+          <div class="right">{{ p.fechaRegistro | date : 'short' }}</div>
         </div>
       </div>
       <ng-template #emptyPlazas><p class="empty">No hay plazas recientes</p></ng-template>
