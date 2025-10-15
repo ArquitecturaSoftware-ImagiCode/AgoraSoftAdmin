@@ -13,6 +13,10 @@ import { TesoreriaLayout } from './layouts/tesoreria-layout/tesoreria-layout';
 import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout';
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 
+
+import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
+import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
+
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
@@ -26,6 +30,16 @@ export const routes: Routes = [
         path: 'dashboard',
         component: ArquitecturaDashboard,
       },
+
+      {
+        path: 'empleados',
+        children: [
+          { path: 'registro', component: RegistroEmpleadoComponent },
+          { path: 'lista', component: ListaEmpleadosComponent },
+        ],
+      },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+
     ],
   },
   {
@@ -38,6 +52,7 @@ export const routes: Routes = [
         path: 'dashboard',
         component: AuditoriaDashboard,
       },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ],
   },
   {
@@ -50,6 +65,7 @@ export const routes: Routes = [
         path: 'dashboard',
         component: PlaneacionDashboard,
       },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ],
   },
   {
@@ -62,6 +78,7 @@ export const routes: Routes = [
         path: 'dashboard',
         component: SoporteDashboard,
       },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ],
   },
   {
@@ -74,6 +91,74 @@ export const routes: Routes = [
         path: 'dashboard',
         component: TesoreriaDashboard,
       },
+       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ],
   },
+/*
+{
+    path: 'admin',
+    // admin layout is a standalone component (AdminLayoutComponent) - lazy load it
+    loadComponent: () => import('./admin/admin-layout.component').then(m => m.AdminLayoutComponent),
+    canActivate: [AuthGuard],
+    data: { role: 'admin' },
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+
+      // Empleados
+      {
+        path: 'empleados',
+        loadComponent: () => import('./admin/empleados/empleados-list.component').then(m => m.EmpleadosListComponent)
+      },
+      {
+        path: 'empleados/nuevo',
+        loadComponent: () => import('./admin/empleados/empleado-form.component').then(m => m.EmpleadoFormComponent)
+      },
+      {
+        path: 'empleados/:id',
+        loadComponent: () => import('./admin/empleados/empleado-detail.component').then(m => m.EmpleadoDetailComponent)
+      },
+      {
+        path: 'empleados/:id/editar',
+        loadComponent: () => import('./admin/empleados/empleado-form.component').then(m => m.EmpleadoFormComponent)
+      },
+
+      // Plazas
+      {
+        path: 'plazas',
+        loadComponent: () => import('./admin/plazas/plazas-list.component').then(m => m.PlazasListComponent)
+      },
+      {
+        path: 'plazas/:id',
+        loadComponent: () => import('./admin/plazas/plaza-detail.component').then(m => m.PlazaDetailComponent)
+      },
+      {
+        path: 'plazas/:id/aprobar',
+        loadComponent: () => import('./admin/plazas/plaza-aprobacion.component').then(m => m.PlazaAprobacionComponent)
+      },
+
+      // Módulos
+      {
+        path: 'modulos',
+        loadComponent: () => import('./admin/modulos/modulos-list.component').then(m => m.ModulosListComponent)
+      },
+      {
+        path: 'modulos/nuevo',
+        loadComponent: () => import('./admin/modulos/modulo-form.component').then(m => m.ModuloFormComponent)
+      },
+      {
+        path: 'modulos/:id/editar',
+        loadComponent: () => import('./admin/modulos/modulo-form.component').then(m => m.ModuloFormComponent)
+      }
+    ]
+  },
+
+  // default / fallback
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: '' }
+*/
+
 ];
