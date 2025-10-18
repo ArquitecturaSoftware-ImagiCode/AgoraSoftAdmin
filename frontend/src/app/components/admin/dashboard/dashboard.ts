@@ -5,7 +5,6 @@ import { catchError, of } from 'rxjs';
 import { DashboardService } from '../../../services/dashboard.service';
 import { DashboardEstadisticas } from '../../../models/dashboard';
 import { HeaderComponent } from '../header/header';
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
