@@ -83,6 +83,13 @@ export const routes: Routes = [
         path: 'dashboard',
         component: TesoreriaDashboard,
       },
+      {
+        path: 'empleados',
+        children: [
+          { path: 'registro', component: RegistroEmpleadoComponent },
+          { path: 'lista', component: ListaEmpleadosComponent },
+        ],
+      },
     ],
   },
 ];
