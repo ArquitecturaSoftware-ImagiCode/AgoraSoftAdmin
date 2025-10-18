@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import axios from 'axios';
+import { SolicitudService } from '../../../services/solicitud.service';
 import { CommonModule, JsonPipe } from '@angular/common';
-import {environment} from '../../../../environments/environments';
+import { environment } from '../../../../environments/environments';
 
 @Component({
   selector: 'app-arquitectura-dashboard',
@@ -11,38 +11,35 @@ import {environment} from '../../../../environments/environments';
   styleUrl: './arquitectura-dashboard.css',
 })
 export class ArquitecturaDashboard implements OnInit {
-  token: string = '';
   usuario: any = null;
+  solicitudes: any[] = [];
+  estadoFiltro: string = 'PENDIENTE';
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private solicitudService: SolicitudService
+  ) {}
 
   async ngOnInit() {
-    // Espera a que Clerk esté inicializado y el usuario esté autenticado
-    if (!this.authService.isSignedIn()) {
-      console.warn('Usuario no autenticado. Redirigiendo a login...');
-      // Aquí podrías redirigir al login si lo deseas
-      return;
-    }
-    this.token = (await this.authService.getToken()) || '';
-    console.log('Token obtenido:', this.token);
-    if (!this.token) {
-      console.error('No se obtuvo un token válido.');
-      return;
-    }
-    try {
-      const response = await fetch(`${environment.apiBaseUrl}/usuario`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.token.toString()}`,
-        },
-        credentials: 'include', // 🔹 si usas cookies en Clerk
-      });
-      if (!response.ok) {
-        throw new Error('Error HTTP: ' + response.status);
-      }
-      this.usuario = await response.json();
-    } catch (error) {
-      console.error('Error al obtener usuario:', error);
-    }
+    await this.cargarUsuario();
+    await this.cargarSolicitudes();
+  }
+
+  async cargarUsuario() {
+    if (!this.authService.isSignedIn()) return;
+    const token = await this.authService.getToken();
+    const response = await fetch(`${environment.apiBaseUrl}/usuario`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    this.usuario = await response.json();
+  }
+
+  async cargarSolicitudes() {
+    this.solicitudes = await this.solicitudService.listarSolicitudes(this.estadoFiltro);
+  }
+
+  async cambiarEstado(id: number, nuevoEstado: string) {
+    await this.solicitudService.actualizarEstado(id, nuevoEstado, this.usuario?.nombre || 'Arquitectura');
+    await this.cargarSolicitudes(); // recarga después del cambio
   }
 }
