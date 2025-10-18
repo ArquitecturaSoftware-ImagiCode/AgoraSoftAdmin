@@ -1,12 +1,34 @@
-<main>
-  <h1 class="text-3xl font-bold">Dashboard Arquitectura</h1>
-  <div>
-    <div *ngIf="usuario">
-      <h2>Usuario</h2>
-      <pre>{{ usuario | json }}</pre>
-    </div>
-    <div *ngIf="!usuario">
-      <p>No se pudo cargar la información del usuario.</p>
-    </div>
-  </div>
+<main class="dashboard">
+  <h1>Dashboard de Arquitectura</h1>
+
+  <section *ngIf="usuario">
+    <h2>Bienvenido, {{ usuario.nombre }}</h2>
+  </section>
+
+  <section class="solicitudes">
+    <h3>Solicitudes Pendientes</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Plaza</th>
+          <th>Representante</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of solicitudes">
+          <td>{{ s.id }}</td>
+          <td>{{ s.plazaNombre }}</td>
+          <td>{{ s.representante }}</td>
+          <td>{{ s.estado }}</td>
+          <td>
+            <button (click)="cambiarEstado(s.id, 'APROBADA')">Aprobar</button>
+            <button (click)="cambiarEstado(s.id, 'RECHAZADA')">Rechazar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </main>
