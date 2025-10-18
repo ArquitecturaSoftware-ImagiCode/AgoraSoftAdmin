@@ -31,9 +31,7 @@
 
     <div class="card">
       <div class="card-title">Ingresos Mensuales</div>
-      <div class="card-value">
-        {{ estadisticas.ingresosMensuales | currency : 'COP' : 'symbol' : '1.0-0' }}
-      </div>
+      <div class="card-value">{{ estadisticas.ingresosMensuales | number : '1.2-2' }}</div>
       <div class="card-sub">Suscripciones activas</div>
     </div>
   </section>

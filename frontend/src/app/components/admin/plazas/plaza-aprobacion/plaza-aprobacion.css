@@ -1,0 +1,6 @@
+.panel { background:#fff; padding:16px; border-radius:8px; }
+.row { display:flex; flex-direction:column; margin-bottom:8px; }
+.actions { margin-top:12px; display:flex; gap:8px; }
+.btn { padding:8px 12px; border-radius:6px; border:1px solid #e5e7eb; background:#fff; }
+.btn.primary { background:#1e40af; color:#fff; border:none; }
+.btn.danger { background:#ef4444; color:#fff; border:none; }

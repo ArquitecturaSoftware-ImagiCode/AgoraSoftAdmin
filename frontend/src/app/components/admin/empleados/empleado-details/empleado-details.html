@@ -1,0 +1,17 @@
+<section class="detail">
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="empleado" class="card">
+    <h3>{{ empleado.nombre }} {{ empleado.apellido }}</h3>
+    <p><strong>Correo:</strong> {{ empleado.correo }}</p>
+    <p><strong>Rol:</strong> {{ empleado.rolDescripcion || empleado.rol }}</p>
+    <p><strong>Departamento:</strong> {{ empleado.departamento }}</p>
+    <p><strong>Teléfono:</strong> {{ empleado.telefono || '-' }}</p>
+
+    <div class="actions">
+      <button (click)="editar()">Editar</button>
+      <button (click)="volver()">Volver</button>
+    </div>
+  </div>
+</section>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { DashboardService } from '../../../services/dashboard.service';
-import { DashboardEstadisticas } from '../../../models/dashboard.model';
+import { DashboardEstadisticas } from '../../../models/dashboard';
 import { HeaderComponent } from '../header/header';
 
 @Component({
@@ -11,7 +11,7 @@ import { HeaderComponent } from '../header/header';
   standalone: true,
   imports: [CommonModule, RouterModule, HeaderComponent],
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css']
+  styleUrls: ['./dashboard.css'],
 })
 export class DashboardComponent implements OnInit {
   estadisticas: DashboardEstadisticas | null = null;
@@ -26,9 +26,10 @@ export class DashboardComponent implements OnInit {
 
   cargarEstadisticas(): void {
     this.loading = true;
-    this.dashboardService.obtenerEstadisticas()
+    this.dashboardService
+      .obtenerEstadisticas()
       .pipe(
-        catchError(err => {
+        catchError((err) => {
           console.error('Error al obtener estadísticas:', err);
           this.error = 'No se pudieron cargar las estadísticas.';
           this.loading = false;

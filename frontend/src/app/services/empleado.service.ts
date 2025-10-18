@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  Empleado,
-  CrearEmpleadoDTO,
-  ActualizarEmpleadoDTO,
-  RolEmpleado,
-} from '../models/empleado.model';
+import { Empleado, CrearEmpleadoDTO, ActualizarEmpleadoDTO, RolEmpleado } from '../models/empleado';
 import { environment } from '../../environments/environments';
 
 @Injectable({
