@@ -97,6 +97,26 @@ export const routes: Routes = [
       },
     ],
   },
+  // Admin
+  {
+    path: 'admin',
+    component: SoporteLayout,
+    canActivate: [AuthGuard],
+    data: { role: 'admin' },
+    children: [
+      {
+        path: 'dashboard',
+        component: ,
+      },
+      {
+        path: 'empleados',
+        children: [
+          { path: 'registro', component: RegistroEmpleadoComponent },
+          { path: 'lista', component: ListaEmpleadosComponent },
+        ],
+      },
+    ],
+  },
   {
     path: 'tesoreria',
     component: TesoreriaLayout,
