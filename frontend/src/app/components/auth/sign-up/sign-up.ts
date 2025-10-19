@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import {environment} from '../../../../environments/environments';
+import { environment } from '../../../../environments/environments';
 
 @Component({
   selector: 'app-sign-up',
@@ -20,7 +20,7 @@ import {environment} from '../../../../environments/environments';
 })
 export class SignUp {
   signUpForm: FormGroup;
-  roles = ['arquitectura', 'auditoria', 'tesoreria', 'planeacion', 'soporte'];
+  roles = ['arquitectura', 'auditoria', 'tesoreria', 'planeacion', 'soporte', 'admin'];
   organizaciones = ['Corabastos', 'La concordia', '7 de Agosto'];
   submitted = false;
   step: 'register' | 'verify' = 'register';
@@ -89,15 +89,14 @@ export class SignUp {
             apellido: clerkUser.lastName,
             correo: clerkUser.emailAddresses?.[0]?.emailAddress,
             rol: clerkUser.unsafeMetadata?.['role'],
-            organizacion: clerkUser.unsafeMetadata?.['plaza']
+            organizacion: clerkUser.unsafeMetadata?.['plaza'],
           };
 
-          
           // Enviar al backend
           await fetch(`${environment.apiBaseUrl}/usuarios`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(usuarioBackend)
+            body: JSON.stringify(usuarioBackend),
           });
         }
 
@@ -108,7 +107,7 @@ export class SignUp {
           this.router.navigate(['/dashboard']); // fallback
         }
       }
-      console.log("HI: " + result?.status)
+      console.log('HI: ' + result?.status);
     } catch (err) {
       console.error('Error en verificación:', err);
     }

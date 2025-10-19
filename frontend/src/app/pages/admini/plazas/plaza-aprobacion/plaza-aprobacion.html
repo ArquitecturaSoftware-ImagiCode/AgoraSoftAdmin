@@ -1,0 +1,27 @@
+<div class="registro-container">
+  <h2>Aprobación de plaza</h2>
+
+  <form [formGroup]="form" (ngSubmit)="aprobar()">
+    <label>Plan inicial</label>
+    <input formControlName="planInicial" type="text" />
+
+    <label>Monto mensual</label>
+    <input formControlName="montoMensual" type="number" />
+
+    <label>Método de pago</label>
+    <input formControlName="metodoPago" type="text" />
+
+    <button type="submit">Aprobar</button>
+  </form>
+
+  <div class="separador"></div>
+
+  <form [formGroup]="motivoForm">
+    <label>Motivo (rechazar/suspender)</label>
+    <input formControlName="motivo" type="text" />
+    <div class="acciones-secundarias">
+      <button type="button" class="danger" (click)="rechazar()">Rechazar</button>
+      <button type="button" class="warning" (click)="suspender()">Suspender</button>
+    </div>
+  </form>
+</div>

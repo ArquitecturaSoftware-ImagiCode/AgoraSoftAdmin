@@ -1,0 +1,41 @@
+<aside class="admin-aside">
+  <div class="brand">
+    <img class="brand-logo" src="/logowhite.svg" alt="Logo" />
+  </div>
+
+  <nav class="nav-list">
+    <a
+      routerLink="/admin/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span class="icon">🏠</span>
+      <span class="label">Dashboard</span>
+    </a>
+
+    <a routerLink="/admin/empleados" routerLinkActive="active">
+      <span class="icon">👥</span>
+      <span class="label">Empleados</span>
+    </a>
+
+    <a routerLink="/admin/plazas" routerLinkActive="active">
+      <span class="icon">📌</span>
+      <span class="label">Plazas</span>
+    </a>
+
+    <!-- más enlaces según tu estructura -->
+  </nav>
+
+  <div class="aside-footer">
+    <button class="logout-button" (click)="cerrarSesion()" type="button" aria-label="Cerrar sesión">
+      <lucide-angular [img]="LogoutIcon" class="logout-icon"></lucide-angular>
+      <span class="logout-label">Cerrar Sesión</span>
+    </button>
+  </div>
+</aside>
+
+<main class="admin-main">
+  <div class="admin-content-shell">
+    <router-outlet></router-outlet>
+  </div>
+</main>

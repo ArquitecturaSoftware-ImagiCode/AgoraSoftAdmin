@@ -1,0 +1,15 @@
+.lista-container {
+  max-width: 900px;
+  margin: 32px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  font-family: Arial, Helvetica, sans-serif;
+}
+h2 { margin: 0 0 16px; font-size: 20px; color:#111827; }
+.detail p { margin: 6px 0; color:#111827; }
+.error { color:#b91c1c; margin:8px 0; }
+.actions { margin-top: 12px; display: flex; gap: 8px; }
+button { padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; background:#fff; cursor:pointer; }
+button:hover { background:#f3f4f6; }

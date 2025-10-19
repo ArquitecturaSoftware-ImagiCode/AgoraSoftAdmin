@@ -14,7 +14,7 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
 import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
-
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout';
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
@@ -100,21 +100,53 @@ export const routes: Routes = [
   // Admin
   {
     path: 'admin',
-    component: SoporteLayout,
+    component: AdminLayoutComponent,
     canActivate: [AuthGuard],
     data: { role: 'admin' },
     children: [
       {
         path: 'dashboard',
-        component: ,
+        loadComponent: () =>
+          import('./pages/admini/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
+      },
+
+      // Empleados (reusando pages/empleados)
+      { path: 'empleados', redirectTo: 'empleados/lista', pathMatch: 'full' },
+      {
+        path: 'empleados/lista',
+        loadComponent: () =>
+          import('./pages/empleados/lista-empleados/lista-empleados.component').then(
+            (m) => m.ListaEmpleadosComponent
+          ),
       },
       {
-        path: 'empleados',
-        children: [
-          { path: 'registro', component: RegistroEmpleadoComponent },
-          { path: 'lista', component: ListaEmpleadosComponent },
-        ],
+        path: 'empleados/registro',
+        loadComponent: () =>
+          import('./pages/empleados/registro-empleado/registro-empleado.component').then(
+            (m) => m.RegistroEmpleadoComponent
+          ),
       },
+
+      {
+        path: 'plazas',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plazas-lista/plazas-lista').then((m) => m.PlazasListaPage),
+      },
+      {
+        path: 'plazas/:id',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plaza-detalle/plaza-detalle').then(
+            (m) => m.PlazaDetallePage
+          ),
+      },
+      {
+        path: 'plazas/:id/aprobar',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plaza-aprobacion/plaza-aprobacion').then(
+            (m) => m.PlazaAprobacionPage
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
   {
