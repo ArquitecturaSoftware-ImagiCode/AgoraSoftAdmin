@@ -17,7 +17,7 @@ import com.imagicode.agorasoftadmin.servicios.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/clerk")
 @CrossOrigin(origins = "*")
 public class ClerkUserController {
 
@@ -49,8 +49,7 @@ public class ClerkUserController {
             Usuario guardado = usuarioService.crearUsuario(nuevoUsuario);
             return Map.of(
                     "mensaje", "Usuario registrado con estado PENDIENTE",
-                    "usuario", guardado
-            );
+                    "usuario", guardado);
         } catch (Exception e) {
             return Map.of("error", "Error al registrar el usuario: " + e.getMessage());
         }
