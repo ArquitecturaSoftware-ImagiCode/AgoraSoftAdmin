@@ -22,6 +22,13 @@ public class PlazaController {
     @Autowired
     private PlazaService plazaService;
 
+    // @PostMapping("/external")
+    // public ResponseEntity<?> createPlaza(@RequestBody PlazaDTO dto) {
+    //     plazaService.createFromLanding(dto);
+    //     return ResponseEntity.ok().build();
+    // }
+
+
     /**
      * Crear nueva plaza (desde frontend público)
      * POST /api/plazas (sin autenticación)
