@@ -1,5 +1,6 @@
-    package com.imagicode.agorasoftadmin.controladores;
+package com.imagicode.agorasoftadmin.controladores;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.imagicode.agorasoftadmin.entidades.Usuario;
@@ -15,6 +16,13 @@ public class UsuarioController {
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
+    }
+
+    public ResponseEntity<Usuario> register(@RequestBody Usuario payload) {
+        // No exponemos password cruda por defecto (seguro). Si se requiere en dev,
+        // usar la sobrecarga con rawPassword y habilitar notify.include-raw-password.
+        Usuario creador = usuarioService.crearUsuario(payload);
+        return ResponseEntity.status(201).body(creador);
     }
 
     // GET: traer todos los usuarios
