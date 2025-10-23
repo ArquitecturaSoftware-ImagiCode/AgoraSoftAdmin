@@ -35,6 +35,28 @@ public class ClerkAuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        
+        String path = httpRequest.getRequestURI();
+        System.out.println("[ClerkAuthFilter] Request path: " + path);
+
+        // Lista de rutas públicas (no requieren token)
+        List<String> publicPaths = Arrays.asList(
+            "/api/admin/plazas/public",
+            "/api/admin/plazas/all",
+            "/api/admin/plazas/pendientes",
+            "/api/plazas/public",
+            "/api/health",
+            "/api/status"
+        );
+
+        // Si la ruta está en la lista pública, se omite la autenticación
+        if (publicPaths.contains(path)) {
+            System.out.println("[ClerkAuthFilter] Ruta pública detectada: " + path);
+            chain.doFilter(request, response);
+            return;
+        }
+
+
         // 🔹 Leer Authorization Header
         String authHeader = httpRequest.getHeader("Authorization");
         System.out.println("[ClerkAuthFilter] Authorization header: " + authHeader);

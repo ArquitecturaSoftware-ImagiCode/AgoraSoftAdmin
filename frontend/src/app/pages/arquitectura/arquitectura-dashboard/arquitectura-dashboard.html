@@ -9,4 +9,52 @@
       <p>No se pudo cargar la información del usuario.</p>
     </div>
   </div>
+
+  <!-- Tabla de plazas pendientes -->
+  <section>
+    <h2 class="text-xl font-semibold mb-4">Plazas Pendientes por Aprobar</h2>
+
+
+    <div *ngIf="plazasPendientes.length > 0; else sinPlazas">
+      <table class="min-w-full border border-gray-300 rounded shadow">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 border">ID</th>
+            <th class="px-4 py-2 border">Nombre</th>
+            <th class="px-4 py-2 border">RUT</th>
+            <th class="px-4 py-2 border">Dirección</th>
+            <th class="px-4 py-2 border">Teléfono</th>
+            <th class="px-4 py-2 border">Email</th>
+            <th class="px-4 py-2 border">Representante</th>
+            <th class="px-4 py-2 border">Fecha Registro</th>
+            <th class="px-4 py-2 border">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let plaza of plazasPendientes" class="hover:bg-gray-50">
+            <td class="px-4 py-2 border text-center">{{ plaza.id }}</td>
+            <td class="px-4 py-2 border">{{ plaza.nombre }}</td>
+            <td class="px-4 py-2 border">{{ plaza.rut }}</td>
+            <td class="px-4 py-2 border">{{ plaza.direccion }}</td>
+            <td class="px-4 py-2 border">{{ plaza.telefono }}</td>
+            <td class="px-4 py-2 border">{{ plaza.emailContacto }}</td>
+            <td class="px-4 py-2 border">{{ plaza.representanteLegal }}</td>
+            <td class="px-4 py-2 border">{{ plaza.fechaRegistro | date: 'short' }}</td>
+            <td class="px-4 py-2 border text-center">
+              <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded mr-2">
+                Aprobar
+              </button>
+              <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                Rechazar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #sinPlazas>
+      <p class="text-gray-500 italic">No hay plazas pendientes por aprobar.</p>
+    </ng-template>
+  </section>
 </main>
