@@ -21,7 +21,6 @@ import {environment} from '../../../../environments/environments';
 export class SignUp {
   signUpForm: FormGroup;
   roles = ['arquitectura', 'auditoria', 'tesoreria', 'planeacion', 'soporte'];
-  organizaciones = ['Corabastos', 'La concordia', '7 de Agosto'];
   submitted = false;
   step: 'register' | 'verify' = 'register';
   code = '';
@@ -32,7 +31,6 @@ export class SignUp {
     this.signUpForm = this.fb.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      organizacion: ['', Validators.required],
       rol: ['', Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required, Validators.minLength(6)]],
@@ -62,7 +60,7 @@ export class SignUp {
         this.signUpForm.value.correo,
         this.signUpForm.value.contrasena,
         this.signUpForm.value.rol,
-        this.signUpForm.value.organizacion
+        'contratista'
       );
       await this.clerkService.sendVerification();
       this.step = 'verify';
@@ -89,7 +87,7 @@ export class SignUp {
             apellido: clerkUser.lastName,
             correo: clerkUser.emailAddresses?.[0]?.emailAddress,
             rol: clerkUser.unsafeMetadata?.['role'],
-            organizacion: clerkUser.unsafeMetadata?.['plaza']
+            organizacion: 'contratista'
           };
 
           

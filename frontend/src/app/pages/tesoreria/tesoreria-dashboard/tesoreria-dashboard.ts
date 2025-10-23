@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule, JsonPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {environment} from '../../../../environments/environments';
 
 @Component({
   selector: 'app-tesoreria-dashboard',
-  imports: [JsonPipe, CommonModule],
+  imports: [JsonPipe, CommonModule, RouterLink],
   templateUrl: './tesoreria-dashboard.html',
   styleUrl: './tesoreria-dashboard.css'
 })

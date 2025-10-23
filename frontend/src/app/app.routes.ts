@@ -14,6 +14,7 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
 import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
+import { GestionPagosPage } from './pages/tesoreria/gestion-pagos/gestion-pagos';
 
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
@@ -82,6 +83,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: TesoreriaDashboard,
+      },
+      {
+        path: 'gestion-pagos',
+        component: GestionPagosPage,
       },
     ],
   },
