@@ -49,4 +49,8 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
+    public List<Usuario> obtenerUsuariosPorOrganizacion(String organizacion) {
+        return usuarioRepository.findByOrganizacion(organizacion);
+    }
+
 }

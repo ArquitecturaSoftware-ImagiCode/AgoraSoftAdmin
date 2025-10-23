@@ -17,7 +17,7 @@ export class UsuarioService {
   }
 
   // GET: traer usuario por id
-  getUsuarioPorId(id: number): Observable<Usuario> {
+  getUsuarioPorId(id: string): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
   }
 
@@ -27,16 +27,21 @@ export class UsuarioService {
   }
 
   // PUT: actualizar usuario por id
-  actualizarUsuario(id: number | undefined, usuario: Usuario): Observable<Usuario> {
+  actualizarUsuario(id: string | undefined, usuario: Usuario): Observable<Usuario> {
     return this.http.put<Usuario>(`${this.apiUrl}/${id}`, usuario);
   }
 
   // DELETE: eliminar usuario por id
-  eliminarUsuario(id: number): Observable<void> {
+  eliminarUsuario(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   agregarUsuario(usuario: Usuario): Observable<Usuario> {
     return this.http.post<Usuario>('http://localhost:8080/usuarios', usuario);
+  }
+
+  // GET: traer usuarios por organización
+  getUsuariosPorOrganizacion(organizacion: string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`http://localhost:8080/api/usuarios/organizacion/${organizacion}`);
   }
 }

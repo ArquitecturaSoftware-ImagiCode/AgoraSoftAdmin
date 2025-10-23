@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { UsuarioService } from '../../../services/usuario.service';
+import { Usuario } from '../../../models/Usuario';
 
 type Plaza = {
   id: number;
@@ -10,10 +12,12 @@ type Plaza = {
 };
 
 type UsuarioEmpresa = {
-  id: number;
+  id: string;
   nombre: string;
   correo: string;
   rol: string;
+  apellido: string;
+  organizacion: string;
 };
 
 @Component({
@@ -23,7 +27,7 @@ type UsuarioEmpresa = {
   templateUrl: './gestion-pagos.html',
   styleUrl: './gestion-pagos.css',
 })
-export class GestionPagosPage {
+export class GestionPagosPage implements OnInit {
   plazas: Plaza[] = [
     { id: 1, nombre: 'Plaza Central', estadoPago: 'pendiente', monto: 1500000, fechaLimite: '2025-10-31' },
     { id: 2, nombre: 'Plaza Norte', estadoPago: 'pagado', monto: 980000, fechaLimite: '2025-09-30' },
@@ -31,12 +35,14 @@ export class GestionPagosPage {
     { id: 4, nombre: 'Plaza Occidente', estadoPago: 'pagado', monto: 1260000, fechaLimite: '2025-09-20' },
   ];
 
-  usuarios: UsuarioEmpresa[] = [
-    { id: 1, nombre: 'Ana Gómez', correo: 'ana@miempresa.com', rol: 'tesoreria' },
-    { id: 2, nombre: 'Carlos Ruiz', correo: 'carlos@miempresa.com', rol: 'auditoria' },
-    { id: 3, nombre: 'María López', correo: 'maria@miempresa.com', rol: 'soporte' },
-    { id: 4, nombre: 'Juan Pérez', correo: 'juan@miempresa.com', rol: 'arquitectura' },
-  ];
+  usuarios: UsuarioEmpresa[] = [];
+  cargandoUsuarios: boolean = true;
+
+  constructor(private usuarioService: UsuarioService) {}
+
+  ngOnInit() {
+    this.cargarUsuariosContratistas();
+  }
 
   get plazasPendientes(): Plaza[] {
     return this.plazas.filter((p) => p.estadoPago === 'pendiente');
@@ -44,6 +50,27 @@ export class GestionPagosPage {
 
   get plazasPagadas(): Plaza[] {
     return this.plazas.filter((p) => p.estadoPago === 'pagado');
+  }
+
+  cargarUsuariosContratistas() {
+    this.cargandoUsuarios = true;
+    this.usuarioService.getUsuariosPorOrganizacion('contratista').subscribe({
+      next: (usuarios: Usuario[]) => {
+        this.usuarios = usuarios.map(usuario => ({
+          id: usuario.id || '',
+          nombre: usuario.nombre || '',
+          correo: usuario.correo || '',
+          rol: usuario.rol || '',
+          apellido: usuario.apellido || '',
+          organizacion: usuario.organizacion || ''
+        }));
+        this.cargandoUsuarios = false;
+      },
+      error: (error: any) => {
+        console.error('Error al cargar usuarios contratistas:', error);
+        this.cargandoUsuarios = false;
+      }
+    });
   }
 }
 
