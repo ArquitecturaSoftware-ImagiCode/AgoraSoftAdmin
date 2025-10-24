@@ -90,6 +90,8 @@ export class AuthService {
   async signOut() {
     await this.clerk.signOut();
     this.signedIn$.next(false);
+    // Forzar redirección a login
+    window.location.href = '/login';
   }
 
   /** Versión síncrona */

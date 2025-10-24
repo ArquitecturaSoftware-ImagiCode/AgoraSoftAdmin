@@ -6,8 +6,21 @@
     </div>
   </header>
 
+  <!-- Animación de carga -->
+  <section class="bg-white rounded-lg shadow p-6" *ngIf="cargandoUsuario">
+    <div class="flex items-center justify-center py-12">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div class="text-center">
+          <h3 class="text-lg font-medium text-gray-900">Cargando información del usuario</h3>
+          <p class="text-sm text-gray-500 mt-1">Por favor espera un momento...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Información del usuario -->
-  <section class="bg-white rounded-lg shadow p-6" *ngIf="usuario">
+  <section class="bg-white rounded-lg shadow p-6" *ngIf="usuario && !cargandoUsuario">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Información del Usuario</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="space-y-3">
@@ -67,7 +80,7 @@
   </section>
 
   <!-- Mensaje de error si no se puede cargar el usuario -->
-  <section class="bg-red-50 border border-red-200 rounded-lg p-6" *ngIf="!usuario">
+  <section class="bg-red-50 border border-red-200 rounded-lg p-6" *ngIf="errorCarga && !cargandoUsuario">
     <div class="flex items-center">
       <div class="flex-shrink-0">
         <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -103,7 +116,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer">
+    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow cursor-pointer" routerLink="/tesoreria/reportes">
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">

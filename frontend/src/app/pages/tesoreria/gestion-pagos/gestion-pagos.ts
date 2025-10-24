@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { UsuarioService } from '../../../services/usuario.service';
 import { OrganizationService } from '../../../services/organization.service';
 import { SubscriptionService } from '../../../services/subscription.service';
@@ -29,7 +30,7 @@ type UsuarioEmpresa = {
 @Component({
   selector: 'app-gestion-pagos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './gestion-pagos.html',
   styleUrl: './gestion-pagos.css',
 })

@@ -1,14 +1,14 @@
 package com.imagicode.agorasoftadmin.entidades;
 
-public enum EstadoPago {
-    PENDIENTE("Pendiente"),
-    PAGADO("Pagado"),
-    VENCIDO("Vencido"),
-    CANCELADO("Cancelado");
+public enum TipoPago {
+    NOMINA("Nómina"),
+    SERVICIO("Servicio"),
+    SUSCRIPCION("Suscripción"),
+    OTRO("Otro");
 
     private final String descripcion;
 
-    EstadoPago(String descripcion) {
+    TipoPago(String descripcion) {
         this.descripcion = descripcion;
     }
 

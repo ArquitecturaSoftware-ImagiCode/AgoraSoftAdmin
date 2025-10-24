@@ -1,0 +1,141 @@
+<div class="reportes-container">
+  <div class="header">
+    <h1>Reportes y Análisis</h1>
+    <p>Visualiza el historial de pagos y suscripciones</p>
+  </div>
+
+  <!-- Estadísticas generales -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>{{ totalPagos }}</h3>
+        <p>Total Pagos</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <h3>{{ totalSuscripciones }}</h3>
+        <p>Total Suscripciones</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💵</div>
+      <div class="stat-content">
+        <h3 class="smaller">{{ formatearMoneda(totalIngresos) }}</h3>
+        <p>Ingresos Totales</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historial de Pagos -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Historial de Pagos</h2>
+      <div class="section-actions">
+        <button class="btn btn-primary" (click)="exportarPagos()">Exportar</button>
+      </div>
+    </div>
+
+
+    <!-- Tabla de pagos -->
+    <div class="table-container">
+      <div *ngIf="cargandoPagos" class="loading">
+        <p>Cargando historial de pagos...</p>
+      </div>
+      <div *ngIf="!cargandoPagos && historialPagos.length === 0" class="no-data">
+        <p>No hay pagos registrados</p>
+      </div>
+      <table *ngIf="!cargandoPagos && historialPagos.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Método</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Comprobante</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pago of historialPagos">
+            <td>{{ pago.id }}</td>
+            <td>
+              <span class="badge badge-{{ pago.tipoPago?.toLowerCase() }}">
+                {{ obtenerDescripcionTipoPago(pago.tipoPago || '') }}
+              </span>
+            </td>
+            <td>{{ formatearFecha(pago.fechaPago) }}</td>
+            <td>{{ formatearMoneda(pago.monto || 0) }}</td>
+            <td>{{ pago.metodoPago }}</td>
+            <td>
+              <span class="status-badge status-{{ pago.estado?.toLowerCase() }}">
+                {{ obtenerDescripcionEstadoPago(pago.estado || '') }}
+              </span>
+            </td>
+            <td>{{ pago.descripcion }}</td>
+            <td>{{ pago.comprobante }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Suscripciones -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Suscripciones</h2>
+      <div class="section-actions">
+        <button class="btn btn-primary" (click)="exportarSuscripciones()">Exportar</button>
+      </div>
+    </div>
+
+
+    <!-- Tabla de suscripciones -->
+    <div class="table-container">
+      <div *ngIf="cargandoSuscripciones" class="loading">
+        <p>Cargando suscripciones...</p>
+      </div>
+      <div *ngIf="!cargandoSuscripciones && suscripciones.length === 0" class="no-data">
+        <p>No hay suscripciones registradas</p>
+      </div>
+      <table *ngIf="!cargandoSuscripciones && suscripciones.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Organización</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Período Inicio</th>
+            <th>Período Fin</th>
+            <th>Precio</th>
+            <th>Stripe ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let suscripcion of suscripciones">
+            <td>{{ suscripcion.id }}</td>
+            <td>{{ suscripcion.organizationId }}</td>
+            <td>
+              <span class="badge badge-premium">
+                {{ obtenerDescripcionTipoSuscripcion('PREMIUM') }}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge status-{{ suscripcion.status?.toLowerCase() }}">
+                {{ obtenerDescripcionEstadoSuscripcion(suscripcion.status || '') }}
+              </span>
+            </td>
+            <td>{{ formatearFecha(suscripcion.currentPeriodStart) }}</td>
+            <td>{{ formatearFecha(suscripcion.currentPeriodEnd) }}</td>
+            <td>{{ formatearMoneda(0) }}</td>
+            <td>{{ suscripcion.stripeSubscriptionId || 'Sin descripción' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
