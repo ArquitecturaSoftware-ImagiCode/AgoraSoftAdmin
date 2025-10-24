@@ -7,7 +7,7 @@ import { Usuario } from '../models/Usuario';
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = 'http://localhost:8080/usuarios';
+  private apiUrl = 'http://localhost:8085/api/usuarios';
 
   constructor(private http: HttpClient) {}
 
@@ -37,11 +37,11 @@ export class UsuarioService {
   }
 
   agregarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>('http://localhost:8080/usuarios', usuario);
+    return this.http.post<Usuario>(this.apiUrl, usuario);
   }
 
   // GET: traer usuarios por organización
   getUsuariosPorOrganizacion(organizacion: string): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`http://localhost:8080/api/usuarios/organizacion/${organizacion}`);
+    return this.http.get<Usuario[]>(`${this.apiUrl}/organizacion/${organizacion}`);
   }
 }

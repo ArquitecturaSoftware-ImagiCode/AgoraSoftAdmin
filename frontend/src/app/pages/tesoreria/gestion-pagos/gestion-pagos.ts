@@ -54,8 +54,10 @@ export class GestionPagosPage implements OnInit {
 
   cargarUsuariosContratistas() {
     this.cargandoUsuarios = true;
+    console.log('Cargando usuarios contratistas...');
     this.usuarioService.getUsuariosPorOrganizacion('contratista').subscribe({
       next: (usuarios: Usuario[]) => {
+        console.log('Usuarios recibidos:', usuarios);
         this.usuarios = usuarios.map(usuario => ({
           id: usuario.id || '',
           nombre: usuario.nombre || '',
@@ -64,6 +66,7 @@ export class GestionPagosPage implements OnInit {
           apellido: usuario.apellido || '',
           organizacion: usuario.organizacion || ''
         }));
+        console.log('Usuarios mapeados:', this.usuarios);
         this.cargandoUsuarios = false;
       },
       error: (error: any) => {
