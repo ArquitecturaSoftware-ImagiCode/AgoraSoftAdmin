@@ -43,6 +43,11 @@ export class GestionPagosPage implements OnInit {
   cargandoUsuarios: boolean = true;
   cargandoPlazas: boolean = true;
 
+  // Constante para el precio estándar: $40 USD = ~160,000 COP (aproximadamente 4,000 COP por USD)
+  private readonly PRECIO_STANDAR_USD = 40;
+  private readonly TASA_CAMBIO_USD_COP = 4000; // Tasa aproximada USD a COP
+  private readonly PRECIO_STANDAR_COP = this.PRECIO_STANDAR_USD * this.TASA_CAMBIO_USD_COP;
+
   constructor(
     private usuarioService: UsuarioService,
     private organizationService: OrganizationService,
@@ -136,7 +141,7 @@ export class GestionPagosPage implements OnInit {
       });
 
       let estadoPago: 'pendiente' | 'pagado' = 'pendiente';
-      let monto = 500000; // Monto base por defecto
+      let monto = this.PRECIO_STANDAR_COP; // Usar precio estándar de $40 USD
       let fechaLimite = new Date();
       fechaLimite.setMonth(fechaLimite.getMonth() + 1);
 
@@ -154,7 +159,7 @@ export class GestionPagosPage implements OnInit {
 
         if (fechaCreacion > unMesAtras && (suscripcion.status === 'active' || suscripcion.status === 'pending')) {
           estadoPago = 'pagado';
-          monto = 750000; // Monto para organizaciones con suscripción activa
+          // Mantener el mismo precio estándar para todas las plazas
           console.log('✅ Suscripción válida - marcando como pagado');
         } else {
           console.log('❌ Suscripción no válida o muy antigua');

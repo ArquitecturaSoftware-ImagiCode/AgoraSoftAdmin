@@ -25,6 +25,11 @@ export class ReportesComponent implements OnInit {
   totalSuscripciones: number = 0;
   totalIngresos: number = 0;
 
+  // Constante para el precio estándar: $40 USD = ~160,000 COP (aproximadamente 4,000 COP por USD)
+  private readonly PRECIO_STANDAR_USD = 40;
+  private readonly TASA_CAMBIO_USD_COP = 4000; // Tasa aproximada USD a COP
+  private readonly PRECIO_STANDAR_COP = this.PRECIO_STANDAR_USD * this.TASA_CAMBIO_USD_COP;
+
   constructor(
     private historialPagoService: HistorialPagoService,
     private subscriptionService: SubscriptionService
@@ -145,5 +150,9 @@ export class ReportesComponent implements OnInit {
       style: 'currency',
       currency: 'COP'
     }).format(monto);
+  }
+
+  obtenerPrecioEstandar(): number {
+    return this.PRECIO_STANDAR_COP;
   }
 }

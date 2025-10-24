@@ -131,7 +131,7 @@
             </td>
             <td>{{ formatearFecha(suscripcion.currentPeriodStart) }}</td>
             <td>{{ formatearFecha(suscripcion.currentPeriodEnd) }}</td>
-            <td>{{ formatearMoneda(0) }}</td>
+            <td>{{ formatearMoneda(obtenerPrecioEstandar()) }}</td>
             <td>{{ suscripcion.stripeSubscriptionId || 'Sin descripción' }}</td>
           </tr>
         </tbody>
