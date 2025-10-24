@@ -16,12 +16,30 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let plaza of plazasPendientes" class="hover:bg-gray-50">
-              <td class="px-4 py-2">{{ plaza.nombre }}</td>
-              <td class="px-4 py-2">{{ plaza.monto | currency:'COP':'symbol':'1.0-0' }}</td>
-              <td class="px-4 py-2">{{ plaza.fechaLimite | date:'mediumDate' }}</td>
-            </tr>
-          </tbody>
+          <!-- Estado de carga -->
+          <tr *ngIf="cargandoPlazas">
+            <td colspan="3" class="px-4 py-8 text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <span class="text-gray-600">Cargando plazas...</span>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Plazas pendientes -->
+          <tr *ngFor="let plaza of plazasPendientes" class="hover:bg-gray-50">
+            <td class="px-4 py-2">{{ plaza.nombre }}</td>
+            <td class="px-4 py-2">{{ plaza.monto | currency:'COP':'symbol':'1.0-0' }}</td>
+            <td class="px-4 py-2">{{ plaza.fechaLimite | date:'mediumDate' }}</td>
+          </tr>
+          
+          <!-- Mensaje cuando no hay plazas pendientes -->
+          <tr *ngIf="!cargandoPlazas && plazasPendientes.length === 0">
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+              No hay plazas con pagos pendientes
+            </td>
+          </tr>
+        </tbody>
         </table>
       </div>
     </div>
@@ -38,12 +56,30 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-            <tr *ngFor="let plaza of plazasPagadas" class="hover:bg-gray-50">
-              <td class="px-4 py-2">{{ plaza.nombre }}</td>
-              <td class="px-4 py-2">{{ plaza.monto | currency:'COP':'symbol':'1.0-0' }}</td>
-              <td class="px-4 py-2">{{ plaza.fechaLimite | date:'mediumDate' }}</td>
-            </tr>
-          </tbody>
+          <!-- Estado de carga -->
+          <tr *ngIf="cargandoPlazas">
+            <td colspan="3" class="px-4 py-8 text-center">
+              <div class="flex items-center justify-center space-x-2">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                <span class="text-gray-600">Cargando plazas...</span>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Plazas pagadas -->
+          <tr *ngFor="let plaza of plazasPagadas" class="hover:bg-gray-50">
+            <td class="px-4 py-2">{{ plaza.nombre }}</td>
+            <td class="px-4 py-2">{{ plaza.monto | currency:'COP':'symbol':'1.0-0' }}</td>
+            <td class="px-4 py-2">{{ plaza.fechaLimite | date:'mediumDate' }}</td>
+          </tr>
+          
+          <!-- Mensaje cuando no hay plazas pagadas -->
+          <tr *ngIf="!cargandoPlazas && plazasPagadas.length === 0">
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">
+              No hay plazas con pagos realizados
+            </td>
+          </tr>
+        </tbody>
         </table>
       </div>
     </div>
