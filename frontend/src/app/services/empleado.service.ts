@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class EmpleadoService {
-  private apiUrl = 'http://localhost:8085/api/admin/empleados';
+  private apiUrl = `${environment.apiBaseUrl}/admin/empleados`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
