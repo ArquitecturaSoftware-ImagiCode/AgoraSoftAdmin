@@ -1,125 +1,93 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import axios from 'axios';
 import { CommonModule, JsonPipe } from '@angular/common';
-import {environment} from '../../../../environments/environments';
+import { OrganizationService, Organization } from '../../../services/organization.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-arquitectura-dashboard',
   standalone: true,
-  imports: [JsonPipe, CommonModule],
+  imports: [CommonModule, JsonPipe],
   templateUrl: './arquitectura-dashboard.html',
-  styleUrl: './arquitectura-dashboard.css',
+  styleUrls: ['./arquitectura-dashboard.css'],
 })
 export class ArquitecturaDashboard implements OnInit {
   token: string = '';
   usuario: any = null;
-  plazasPendientes: any[] = [];
+  organizations: Organization[] = [];
 
-
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private organizationService: OrganizationService
+  ) {}
 
   async ngOnInit() {
-    // Espera a que Clerk esté inicializado y el usuario esté autenticado
-    if (!this.authService.isSignedIn()) {
-      console.warn('Usuario no autenticado. Redirigiendo a login...');
-      // Aquí podrías redirigir al login si lo deseas
-      return;
-    }
+    // 1️Verificar sesión activa
+    if (!this.authService.isSignedIn()) return;
 
+    // 2Obtener token de sesión
     this.token = (await this.authService.getToken()) || '';
-    console.log('Token obtenido:', this.token);
-
     if (!this.token) {
       console.error('No se obtuvo un token válido.');
       return;
     }
 
+    // Cargar usuario y organizaciones
     await this.cargarUsuario();
-    await this.cargarPlazasPendientes();
+    await this.cargarOrganizations();
   }
 
+  // 🔹 Obtener usuario actual
   async cargarUsuario() {
     try {
-      const response = await fetch(`${environment.apiBaseUrl}/usuario`, {
+      // Aquí puedes usar el endpoint de usuario directamente con fetch o un servicio
+      const res = await fetch(`/usuario`, {
         headers: { Authorization: `Bearer ${this.token}` },
+        credentials: 'include',
       });
-      if (!response.ok) throw new Error('Error al obtener usuario');
-      this.usuario = await response.json();
+      if (!res.ok) throw new Error('Error al obtener usuario');
+      this.usuario = await res.json();
     } catch (error) {
       console.error('Error al obtener usuario:', error);
     }
   }
 
-  async cargarPlazasPendientes() {
-  try {
-    const response = await fetch(`${environment.apiBaseUrl}/admin/plazas/pendientes`, {
-      headers: { Authorization: `Bearer ${this.token}` },
-    });
-    if (!response.ok) throw new Error('Error al obtener plazas');
-    this.plazasPendientes = await response.json();
-  } catch (error) {
-    console.error('Error al obtener plazas pendientes:', error);
-  }
-}
-
-async aprobarPlaza(plazaId: number) {
-  const confirmar = confirm('¿Seguro que deseas aprobar esta plaza?');
-  if (!confirmar) return;
-
-  try {
-    // DTO mínimo requerido por el backend
-    const dto = {};  
-
-    const response = await fetch(`${environment.apiBaseUrl}/admin/plazas/${plazaId}/aprobar`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.token}`,
-      },
-      body: JSON.stringify(dto),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al aprobar plaza: ${errorText}`);
+  // 🔹 Obtener todas las organizaciones usando OrganizationService
+  async cargarOrganizations() {
+    try {
+      this.organizations = await firstValueFrom(
+        this.organizationService.getAll(this.token)
+      );
+    } catch (error) {
+      console.error('Error al obtener organizaciones:', error);
     }
-
-    alert('Plaza aprobada correctamente.');
-    await this.cargarPlazasPendientes();
-  } catch (error) {
-    console.error(error);
-    alert('Ocurrió un error al aprobar la plaza.');
   }
-}
 
-  async rechazarPlaza(plazaId: number) {
-    const motivo = prompt('Ingresa el motivo del rechazo:');
-    if (!motivo) return;
+  // Cambiar estado activo/inactivo de la organización usando OrganizationService
+  async toggleActivo(org: Organization) {
+    try {
+      const updated = await firstValueFrom(
+        this.organizationService.toggleEstado(org.id, !org.activo, this.token)
+      );
+      org.activo = updated.activo;
+    } catch (error) {
+      console.error('Error al actualizar estado:', error);
+      alert('No se pudo actualizar el estado de la organización');
+    }
+  }
+
+  // 🔹 Eliminar organización usando OrganizationService
+  async eliminarOrganizacion(id: number) {
+    const confirmar = confirm('¿Seguro que deseas eliminar esta organización?');
+    if (!confirmar) return;
 
     try {
-      const dto = { motivo };  // DTO mínimo requerido por el backend
-
-      const response = await fetch(`${environment.apiBaseUrl}/admin/plazas/${plazaId}/rechazar`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
-        },
-        body: JSON.stringify(dto),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error al rechazar plaza: ${errorText}`);
-      }
-
-      alert('Plaza rechazada correctamente.');
-      await this.cargarPlazasPendientes();
+      await firstValueFrom(this.organizationService.delete(id, this.token));
+      alert('Organización eliminada correctamente');
+      this.organizations = this.organizations.filter(org => org.id !== id);
     } catch (error) {
-      console.error(error);
-      alert('Ocurrió un error al rechazar la plaza.');
+      console.error('Error al eliminar organización:', error);
+      alert('No se pudo eliminar la organización');
     }
   }
-
 }

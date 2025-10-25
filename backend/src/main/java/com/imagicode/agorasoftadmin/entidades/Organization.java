@@ -24,7 +24,7 @@ public class Organization {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "\"OwnerId\"", nullable = false)
     @JsonIgnore 
-    private Usuario propietario;
+    private User propietario;
 
     @Column(name = "\"IsActive\"", nullable = false)
     private Boolean activo = false;
@@ -40,7 +40,7 @@ public class Organization {
     }
 
     // Constructor personalizado
-    public Organization(String clerkOrgId, String nombre, Usuario propietario) {
+    public Organization(String clerkOrgId, String nombre, User propietario) {
         this.clerkOrgId = clerkOrgId;
         this.nombre = nombre;
         this.propietario = propietario;
@@ -73,11 +73,11 @@ public class Organization {
         this.nombre = nombre;
     }
 
-    public Usuario getPropietario() {
+    public User getPropietario() {
         return propietario;
     }
 
-    public void setPropietario(Usuario propietario) {
+    public void setPropietario(User propietario) {
         this.propietario = propietario;
     }
 
