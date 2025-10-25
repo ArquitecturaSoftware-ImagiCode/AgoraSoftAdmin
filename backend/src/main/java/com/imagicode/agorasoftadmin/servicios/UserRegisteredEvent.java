@@ -1,11 +1,15 @@
-package com.imagicode.agorasoftadmin.notificaciones.events;
+package com.imagicode.agorasoftadmin.servicios;
 
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 
+/**
+ * Evento de dominio: usuario registrado.
+ * Mantener simple y dentro de la capa de servicios para no crear carpetas
+ * nuevas.
+ */
 public class UserRegisteredEvent {
     private final Usuario usuario;
-    // Por seguridad: solo dev. Evita guardar password en entidades.
-    private final String rawPassword; // puede ser null
+    private final String rawPassword; // puede ser null (no se usa por defecto)
 
     public UserRegisteredEvent(Usuario usuario, String rawPassword) {
         this.usuario = usuario;

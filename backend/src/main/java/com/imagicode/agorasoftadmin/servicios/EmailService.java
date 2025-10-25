@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+/**
+ * Servicio de envío de correo.
+ * Exponer un método tipado (EmailMessage) mejora legibilidad y contrato.
+ * Se mantienen métodos existentes para compatibilidad.
+ */
 @Service
 public class EmailService {
 
@@ -17,16 +22,30 @@ public class EmailService {
         this.emailsender = emailsender;
     }
 
+    /** Nuevo método recomendado: envío usando DTO de intención. */
+    public void send(EmailMessage message) {
+        if (message.getHtmlBody() != null && !message.getHtmlBody().isBlank()) {
+            sendHtml(message.getTo(), message.getSubject(), message.getHtmlBody(), message.getFrom());
+        } else {
+            sendEmail(
+                    message.getTo(),
+                    message.getSubject(),
+                    message.getTextBody() != null ? message.getTextBody() : "");
+        }
+    }
+
+    /** Compatibilidad: envío texto plano. */
     public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        message.setFrom("arquitest4@gmail.com");
+        // Nota: el remitente por defecto se toma del mail sender; si se requiere
+        // override, usar send(EmailMessage).
         emailsender.send(message);
     }
 
-    // Envío HTML
+    /** Compatibilidad: envío HTML directo. Preferir send(EmailMessage). */
     public void sendHtml(String to, String subject, String html, String from) {
         try {
             MimeMessage mime = emailsender.createMimeMessage();
@@ -42,5 +61,4 @@ public class EmailService {
             throw new RuntimeException("Error enviando correo HTML", e);
         }
     }
-
 }
