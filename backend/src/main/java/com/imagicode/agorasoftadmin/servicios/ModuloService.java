@@ -32,20 +32,22 @@ public class ModuloService {
             throw new RuntimeException("Ya existe un módulo con ese nombre");
         }
 
-        Empleado empleado = empleadoRepository.findByClerkUserId(empleadoClerkUserId)
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+        // Empleado empleado = empleadoRepository.findByClerkUserId(empleadoClerkUserId)
+        // .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
 
-        // Verificar permisos
-        if (!empleado.getRol().tienePermiso("MANAGE_MODULES")) {
-            throw new RuntimeException("No tiene permisos para crear módulos");
-        }
+        // // Verificar permisos
+        // if (!empleado.getRol().tienePermiso("MANAGE_MODULES")) {
+        // throw new RuntimeException("No tiene permisos para crear módulos");
+        // }
 
         Modulo modulo = new Modulo(
                 dto.getNombre(),
                 dto.getDescripcion(),
                 dto.getIcono(),
                 dto.getPrecioMensual(),
-                empleado);
+                dto.getActivo()
+
+        );
 
         modulo = moduloRepository.save(modulo);
 
@@ -87,19 +89,11 @@ public class ModuloService {
         Modulo modulo = moduloRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Módulo no encontrado"));
 
-        Empleado empleado = empleadoRepository.findByClerkUserId(empleadoClerkUserId)
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-
-        // Verificar permisos
-        if (!empleado.getRol().tienePermiso("MANAGE_MODULES")) {
-            throw new RuntimeException("No tiene permisos para actualizar módulos");
-        }
 
         modulo.setNombre(dto.getNombre());
         modulo.setDescripcion(dto.getDescripcion());
         modulo.setIcono(dto.getIcono());
         modulo.setPrecioMensual(dto.getPrecioMensual());
-        modulo.actualizar(empleado);
 
         modulo = moduloRepository.save(modulo);
 
@@ -114,16 +108,7 @@ public class ModuloService {
         Modulo modulo = moduloRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Módulo no encontrado"));
 
-        Empleado empleado = empleadoRepository.findByClerkUserId(empleadoClerkUserId)
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-
-        // Verificar permisos
-        if (!empleado.getRol().tienePermiso("MANAGE_MODULES")) {
-            throw new RuntimeException("No tiene permisos para modificar módulos");
-        }
-
         modulo.setActivo(!modulo.getActivo());
-        modulo.actualizar(empleado);
 
         modulo = moduloRepository.save(modulo);
 
@@ -150,11 +135,6 @@ public class ModuloService {
         dto.setActivo(modulo.getActivo());
         dto.setFechaCreacion(modulo.getFechaCreacion());
         dto.setFechaActualizacion(modulo.getFechaActualizacion());
-
-        if (modulo.getCreadoPor() != null) {
-            dto.setCreadoPorId(modulo.getCreadoPor().getId());
-            dto.setCreadoPorNombre(modulo.getCreadoPor().getNombreCompleto());
-        }
 
         dto.setCantidadPlazasContratadas(modulo.getCantidadPlazasContratadas());
 
