@@ -17,7 +17,7 @@ public enum RolEmpleado {
             "VIEW_REPORTS"
     }),
 
-    TESORERIA("Tesoreria", new String[] {
+    SOPORTE("Soporte", new String[] {
             "VIEW_PLAZAS",
             "SEND_NOTIFICATIONS",
             "VIEW_BASIC_REPORTS"
