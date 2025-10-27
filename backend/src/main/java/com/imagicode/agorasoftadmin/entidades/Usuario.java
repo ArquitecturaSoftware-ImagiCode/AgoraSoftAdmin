@@ -2,6 +2,7 @@
 package com.imagicode.agorasoftadmin.entidades;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.PrePersist;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,6 +34,19 @@ public class Usuario {
     private String estado;
 
     public Usuario() {
+    }
+
+    @PrePersist
+    public void prePersistDefaults() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.estado == null) {
+            this.estado = "PENDIENTE";
+        }
+        if (this.activo == null) {
+            this.activo = Boolean.TRUE;
+        }
     }
 
     public Usuario(String id, String nombre, String apellido, String correo, String rol, String organizacion) {

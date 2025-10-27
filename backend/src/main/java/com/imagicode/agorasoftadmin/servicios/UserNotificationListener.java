@@ -12,9 +12,9 @@ import org.springframework.transaction.event.TransactionPhase;
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 
 /**
- * Listener de eventos de usuario para notificar por correo el registro exitoso.
- * Se ejecuta AFTER_COMMIT para no enviar si la transacción falla.
- * No crea nuevas carpetas: vive en la capa de servicios.
+ * Listener de eventos de usuario para notificar por correo el registro.
+ * Queda desactivado por propiedad (notify.user-registration.enabled=false por
+ * defecto).
  */
 @Component
 public class UserNotificationListener {
@@ -28,6 +28,9 @@ public class UserNotificationListener {
     @Value("${notify.include-raw-password:false}")
     private boolean includeRawPassword;
 
+    @Value("${notify.user-registration.enabled:false}")
+    private boolean userRegistrationEnabled;
+
     public UserNotificationListener(EmailService emailService, EmailTemplateRenderer renderer) {
         this.emailService = emailService;
         this.renderer = renderer;
@@ -36,6 +39,11 @@ public class UserNotificationListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onUserRegistered(UserRegisteredEvent event) {
+        if (!userRegistrationEnabled) {
+            // Desactivado por configuración: no enviamos correos en registro de usuario.
+            return;
+        }
+
         Usuario u = event.getUsuario();
 
         Map<String, Object> model = new HashMap<>();
@@ -50,7 +58,6 @@ public class UserNotificationListener {
         model.put("password", rawPassword != null ? rawPassword : "");
 
         String subject = "Bienvenido a AgoraSoft - Registro exitoso";
-        // Plantilla ubicada en resources/templates/email/user-registered.html
         String html = renderer.renderHtml("email/user-registered", model);
 
         EmailMessage msg = EmailMessage.builder()

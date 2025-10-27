@@ -6,11 +6,10 @@ import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 import com.imagicode.agorasoftadmin.repositorios.UsuarioRepository;
-
-import jakarta.transaction.Transactional;
 
 /**
  * Capa de aplicación/servicio para usuarios.
@@ -31,31 +30,22 @@ public class UsuarioService {
         this.adminNotifier = adminNotifier;
     }
 
-    /**
-     * Crea usuario y dispara evento de "usuario registrado".
-     * 
-     * @param usuario entidad a persistir (la lógica de password hashing debe
-     *                hacerse aquí).
-     */
     @Transactional
     public Usuario crearUsuario(Usuario usuario) {
-        // Guarda usuario (la lógica de hashing de password ya se hizo en el
-        // controlador) y devuelve el usuario guardado (para el id, que siempre
-        // corresponde).
         Usuario guardado = repo.save(usuario);
 
-        // Evento para listeners (correo, etc.). No incluye password cruda.
+        // Se publica el evento, pero el listener no enviará correo si
+        // notify.user-registration.enabled=false
         events.publishEvent(new UserRegisteredEvent(guardado, null));
 
-        // Notificación administrativa (opcional, controlada por property/ENV). No
-        // bloqueante.
-        Map<String, Object> payload = Map.of(
-                "id", guardado.getId(),
-                "correo", guardado.getCorreo(),
-                "nombre", guardado.getNombre(),
-                "apellido", guardado.getApellido(),
-                "estado", guardado.getEstado(),
-                "rol", guardado.getRol());
+        // Map.of throws NPE if any value is null. Build payload defensively.
+        java.util.Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("id", guardado.getId());
+        payload.put("correo", guardado.getCorreo());
+        payload.put("nombre", guardado.getNombre());
+        payload.put("apellido", guardado.getApellido());
+        payload.put("estado", guardado.getEstado() != null ? guardado.getEstado() : "PENDIENTE");
+        payload.put("rol", guardado.getRol());
         adminNotifier.notifyNuevoRegistro(payload);
 
         return guardado;
@@ -73,6 +63,7 @@ public class UsuarioService {
                 "apellido", guardado.getApellido(),
                 "estado", guardado.getEstado(),
                 "rol", guardado.getRol());
+
         adminNotifier.notifyNuevoRegistro(payload);
         return guardado;
     }
