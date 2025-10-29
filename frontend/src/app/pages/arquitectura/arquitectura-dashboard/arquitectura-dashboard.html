@@ -1,12 +1,75 @@
-<main>
-  <h1 class="text-3xl font-bold">Dashboard Arquitectura</h1>
-  <div>
-    <div *ngIf="usuario">
-      <h2>Usuario</h2>
-      <pre>{{ usuario | json }}</pre>
-    </div>
-    <div *ngIf="!usuario">
-      <p>No se pudo cargar la información del usuario.</p>
-    </div>
+<main class="p-6">
+  <h1 class="text-3xl font-bold mb-6">Dashboard Arquitectura</h1>
+
+  <!-- Usuario -->
+  <div *ngIf="usuario; else sinUsuario">
+    <h2 class="text-xl font-semibold mb-2">Usuario</h2>
+    <pre class="bg-gray-100 p-4 rounded">{{ usuario | json }}</pre>
   </div>
+
+  <ng-template #sinUsuario>
+    <p class="text-red-500">No se pudo cargar la información del usuario.</p>
+  </ng-template>
+
+  <!-- Tabla de organizaciones -->
+  <section class="mt-8">
+    <h2 class="text-xl font-semibold mb-4">Organizaciones</h2>
+
+    <div *ngIf="organizations.length > 0; else sinOrganizaciones">
+      <table class="min-w-full border border-gray-300 rounded shadow">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 border text-center">Estado</th>
+            <th class="px-4 py-2 border">ID</th>
+            <th class="px-4 py-2 border">Nombre</th>
+            <th class="px-4 py-2 border text-center">Acción</th>
+            <th class="px-4 py-2 border">Creado</th>
+            <th class="px-4 py-2 border">Actualizado</th>
+            <th class="px-4 py-2 border text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let org of organizations" class="hover:bg-gray-50">
+            <!-- Indicador de estado -->
+            <td class="px-4 py-2 border text-center">
+              <span
+                class="inline-block w-4 h-4 rounded-full"
+                [ngClass]="org.activo ? 'bg-green-500' : 'bg-red-500'">
+              </span>
+            </td>
+
+            <td class="px-4 py-2 border text-center">{{ org.id }}</td>
+            <td class="px-4 py-2 border">{{ org.nombre }}</td>
+
+            <!--Botón Activar/Desactivar -->
+            <td class="px-4 py-2 border text-center">
+              <button
+                (click)="toggleActivo(org)"
+                [ngClass]="org.activo
+                  ? 'bg-yellow-500 hover:bg-yellow-600'
+                  : 'bg-green-500 hover:bg-green-600'"
+                class="text-white px-3 py-1 rounded transition">
+                {{ org.activo ? 'Desactivar' : 'Activar' }}
+              </button>
+            </td>
+
+            <td class="px-4 py-2 border">{{ org.createdAt | date:'short' }}</td>
+            <td class="px-4 py-2 border">{{ org.updatedAt ? (org.updatedAt | date:'short') : '-' }}</td>
+
+            <td class="px-4 py-2 border text-center">
+              <button
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                (click)="eliminarOrganizacion(org.id)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #sinOrganizaciones>
+      <p class="text-gray-500 italic">No hay organizaciones disponibles.</p>
+    </ng-template>
+  </section>
 </main>
