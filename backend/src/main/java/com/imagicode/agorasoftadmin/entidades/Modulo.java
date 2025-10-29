@@ -35,16 +35,6 @@ public class Modulo {
     @Column
     private LocalDateTime fechaActualizacion;
 
-    // Empleado que creó el módulo
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "creado_por_empleado_id")
-    private Empleado creadoPor;
-
-    // Empleado que actualizó por última vez
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actualizado_por_empleado_id")
-    private Empleado actualizadoPor;
-
     @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL)
     private Set<PlazaModulo> plazasConModulo = new HashSet<>();
 
@@ -55,13 +45,13 @@ public class Modulo {
     }
 
     public Modulo(String nombre, String descripcion, String icono,
-            BigDecimal precioMensual, Empleado creadoPor) {
+            BigDecimal precioMensual, boolean activo) {
         this();
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.icono = icono;
         this.precioMensual = precioMensual;
-        this.creadoPor = creadoPor;
+        this.activo = activo;
     }
 
     // Getters y Setters
@@ -129,34 +119,12 @@ public class Modulo {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public Empleado getCreadoPor() {
-        return creadoPor;
-    }
-
-    public void setCreadoPor(Empleado creadoPor) {
-        this.creadoPor = creadoPor;
-    }
-
-    public Empleado getActualizadoPor() {
-        return actualizadoPor;
-    }
-
-    public void setActualizadoPor(Empleado actualizadoPor) {
-        this.actualizadoPor = actualizadoPor;
-    }
-
     public Set<PlazaModulo> getPlazasConModulo() {
         return plazasConModulo;
     }
 
     public void setPlazasConModulo(Set<PlazaModulo> plazasConModulo) {
         this.plazasConModulo = plazasConModulo;
-    }
-
-    // Métodos de negocio
-    public void actualizar(Empleado empleado) {
-        this.actualizadoPor = empleado;
-        this.fechaActualizacion = LocalDateTime.now();
     }
 
     public int getCantidadPlazasContratadas() {
@@ -168,5 +136,24 @@ public class Modulo {
     @PreUpdate
     public void preUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
+    }
+
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<OrganizationModulo> organizations = new HashSet<>();
+
+    // Getter y Setter
+    public Set<OrganizationModulo> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(Set<OrganizationModulo> organizations) {
+        this.organizations = organizations;
+    }
+
+    // Método helper para contar organizaciones que tienen este módulo activo
+    public int getCantidadOrganizacionesActivas() {
+        return (int) organizations.stream()
+                .filter(OrganizationModulo::getActivo)
+                .count();
     }
 }

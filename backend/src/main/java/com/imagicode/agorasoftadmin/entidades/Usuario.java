@@ -1,9 +1,13 @@
-
 package com.imagicode.agorasoftadmin.entidades;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
@@ -25,6 +29,8 @@ public class Usuario {
     private LocalDateTime createdAt;
     private String organizacion;
 
+    private String estado;
+
     public Usuario() {
     }
 
@@ -35,6 +41,7 @@ public class Usuario {
         this.correo = correo;
         this.rol = rol;
         this.organizacion = organizacion;
+        this.estado = "PENDIENTE";
     }
 
     public String getId() {
@@ -115,5 +122,13 @@ public class Usuario {
 
     public void setOrganizacion(String organizacion) {
         this.organizacion = organizacion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

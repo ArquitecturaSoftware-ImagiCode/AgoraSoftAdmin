@@ -7,10 +7,11 @@ services:
       dockerfile: Dockerfile
     container_name: agorasoftadmin-backend
     environment:
+      ASPNETCORE_URLS: http://+:8080
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/AgoraSoft
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_PASSWORD: contrasena
       JPA_DDL_AUTO: update
       JPA_SHOW_SQL: "true"
 

@@ -2,57 +2,68 @@ package com.imagicode.agorasoftadmin.entidades;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "\"Organizations\"")
 public class Organization {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "\"Id\"")
-    private Integer id;
+    @Column(name = "\"Id\"") 
 
-    @Column(name = "\"ClerkOrgId\"", nullable = false)
+    private Long id;
+
+    @Column(name = "\"ClerkOrgId\"", nullable = false, unique = true)
     private String clerkOrgId;
 
     @Column(name = "\"Name\"", nullable = false)
-    private String name;
+    private String nombre;
 
-    @Column(name = "\"OwnerId\"", nullable = false)
-    private Integer ownerId;
+    // Dueño de la organización (un usuario)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "\"OwnerId\"", nullable = false)
+    @JsonIgnore 
+    private User propietario;
 
     @Column(name = "\"IsActive\"", nullable = false)
-    private Boolean isActive = false;
+    private Boolean activo = false;
 
     @Column(name = "\"CreatedAt\"", nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "\"UpdatedAt\"")
     private LocalDateTime updatedAt;
 
+    // Constructor vacío requerido por JPA
     public Organization() {
     }
 
-    public Organization(String clerkOrgId, String name, Integer ownerId, Boolean isActive) {
+    // Constructor personalizado
+    public Organization(String clerkOrgId, String nombre, User propietario) {
         this.clerkOrgId = clerkOrgId;
-        this.name = name;
-        this.ownerId = ownerId;
-        this.isActive = isActive;
+        this.nombre = nombre;
+        this.propietario = propietario;
+        this.activo = false;
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters y Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -64,28 +75,28 @@ public class Organization {
         this.clerkOrgId = clerkOrgId;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public Integer getOwnerId() {
-        return ownerId;
+    public User getPropietario() {
+        return propietario;
     }
 
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
+    public void setPropietario(User propietario) {
+        this.propietario = propietario;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public Boolean getActivo() {
+        return activo;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -102,10 +113,5 @@ public class Organization {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 }

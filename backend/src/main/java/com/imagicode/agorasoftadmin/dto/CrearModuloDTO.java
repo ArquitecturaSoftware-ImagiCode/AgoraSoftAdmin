@@ -24,15 +24,20 @@ public class CrearModuloDTO {
     @Positive(message = "El precio debe ser mayor a cero")
     private BigDecimal precioMensual;
 
+    @NotNull(message = "El estado es obligatorio")
+    private boolean activo;
+
     // Constructores
     public CrearModuloDTO() {
     }
 
-    public CrearModuloDTO(String nombre, String descripcion, String icono, BigDecimal precioMensual) {
+    public CrearModuloDTO(String nombre, String descripcion, String icono, BigDecimal precioMensual, boolean activo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.icono = icono;
         this.precioMensual = precioMensual;
+        this.activo = activo;
+
     }
 
     // Getters y Setters
@@ -66,5 +71,9 @@ public class CrearModuloDTO {
 
     public void setPrecioMensual(BigDecimal precioMensual) {
         this.precioMensual = precioMensual;
+    }
+
+    public boolean getActivo(){
+        return activo;
     }
 }

@@ -8,7 +8,7 @@ import {environment} from '../../../../environments/environments';
   selector: 'app-tesoreria-dashboard',
   imports: [CommonModule, RouterLink],
   templateUrl: './tesoreria-dashboard.html',
-  styleUrl: './tesoreria-dashboard.css'
+  styleUrls: ['./tesoreria-dashboard.css']
 })
 export class TesoreriaDashboard implements OnInit {
   token: string = '';
@@ -43,10 +43,7 @@ export class TesoreriaDashboard implements OnInit {
       
       const response = await fetch(`${environment.apiBaseUrl}/usuario`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.token.toString()}`,
-        },
-        credentials: 'include', // 🔹 si usas cookies en Clerk
+        headers: { Authorization: `Bearer ${this.token}` },
       });
       
       if (!response.ok) {

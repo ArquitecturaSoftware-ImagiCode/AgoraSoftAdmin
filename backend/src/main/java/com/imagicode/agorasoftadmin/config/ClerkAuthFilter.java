@@ -1,6 +1,7 @@
 package com.imagicode.agorasoftadmin.config;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,9 +22,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.List;
-import java.util.Arrays;
-
 
 @Component
 public class ClerkAuthFilter implements Filter {
@@ -34,6 +32,28 @@ public class ClerkAuthFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        
+        String path = httpRequest.getRequestURI();
+        System.out.println("[ClerkAuthFilter] Request path: " + path);
+
+        // Lista de rutas públicas (no requieren token)
+        List<String> publicPaths = Arrays.asList(
+            "/api/admin/plazas/public",
+            "/api/admin/plazas/all",
+            "/api/admin/plazas/pendientes",
+            "/api/plazas/public",
+            "/api/health",
+            "/api/status"
+        );
+
+        // Si la ruta está en la lista pública, se omite la autenticación
+        if (publicPaths.contains(path)) {
+            System.out.println("[ClerkAuthFilter] Ruta pública detectada: " + path);
+            chain.doFilter(request, response);
+            return;
+        }
+
 
         // 🔹 Leer Authorization Header
         String authHeader = httpRequest.getHeader("Authorization");
@@ -65,7 +85,7 @@ public class ClerkAuthFilter implements Filter {
                     headers,
                     AuthenticateRequestOptions
                             .secretKey("sk_test_GNj2mKLiTHeAdLs1kF7RR0vvVZ2dzVGrVgiGIrqsVF")
-                            .authorizedParties(Arrays.asList("http://10.43.103.209", "http://localhost:8085", "http://127.0.0.1", "http://10.43.102.15","https://1cb8343a3c8d.ngrok-free.app","http://localhost:30080","http://127.0.0.1:4040"))
+                            .authorizedParties(Arrays.asList("http://10.43.103.209", "http://localhost:8085", "http://127.0.0.1", "http://10.43.102.15","https://1cb8343a3c8d.ngrok-free.app","http://localhost:30080","http://127.0.0.1:4040", "http://localhost:4200","https://agorasoftadmin.ngrok.app"))
                             .build()
             );
 

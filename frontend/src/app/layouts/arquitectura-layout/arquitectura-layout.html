@@ -1,39 +1,26 @@
 <main class="flex bg-gray-100 min-h-screen">
-  <div class="h-[100vh] bg-blue-900 w-72 p-5 shadow-sm border border-gray-200 fixed">
-    <img class="w-40 h-10" src="/logowhite.svg" alt="Logo" />
-    <div class="w-full flex-col mt-10">
-      <a [class]="getButtonClasses('/arquitectura/dashboard')" routerLink="/arquitectura/dashboard">
+  <div class="h-[100vh] bg-white w-72 p-5 shadow-sm border border-gray-200 fixed">
+    <div class="flex items-center gap-3 border-b border-b-gray-200 pb-5">
+      <img src="/logo.svg" alt="Logo" />
+      <h1 class="text-3xl font-bold">AgoraAdmin</h1>
+    </div>
+    <div class="w-full flex-col mt-5">
+      <a class="bg-blue-900 flex py-3 px-5 text-white rounded-lg gap-2" href="#">
         <lucide-angular [img]="DashboardIcon" class="size-5"></lucide-angular>
         Dashboard
       </a>
 
-      <a [class]="getButtonClasses('/dashboard-contratista/manage-applicants')" href="/dashboard-contratista/manage-applicants">
+      <a
+        class="flex mt-3 py-3 px-5 rounded-lg gap-2 hover: hover:bg-gray-200 transition-all duration-300"
+        href="/arquitectura/modulos"
+      >
         <lucide-angular [img]="ApplicantsIcon" class="size-5"></lucide-angular>
-        Funcionalidad A
+        Modulos
       </a>
 
-      <a [class]="getButtonClasses('/dashboard-contratista/manage-projects')" href="/dashboard-contratista/manage-projects">
-        <lucide-angular [img]="ProjectIcon" class="size-5"></lucide-angular>
-        Funcionalidad B
-      </a>
-
-      <a [class]="getButtonClasses('/dashboard-contratista/freelancers')" routerLink="/dashboard-contratista/freelancers">
-        <lucide-angular [img]="FreelancersIcon" class="size-5"></lucide-angular>
-        Funcionalidad C
-      </a>
-
-      <a [class]="getButtonClasses('#')" href="#">
-        <lucide-angular [img]="ProfileIcon" class="size-5"></lucide-angular>
-        Funcionalidad D
-      </a>
-
-      <a [class]="getButtonClasses('/dashboard-contratista/chat')" href="/dashboard-contratista/chat">
-        <lucide-angular [img]="ChatIcon" class="size-5"></lucide-angular>
-        Funcionalidad E
-      </a>
 
       <button
-        class="w-full flex mt-3 py-3 px-5 rounded-lg gap-2 text-white hover:text-blue-900 hover:bg-white transition-all duration-300"
+        class="w-full flex mt-3 py-3 px-5 rounded-lg gap-2 hover: hover:bg-gray-200 transition-all duration-300"
         (click)="cerrarSesion()"
         type="button"
       >
@@ -42,7 +29,7 @@
       </button>
     </div>
   </div>
-  <div class="w-full sm:ml-72 lg:ml-52">
+  <div class="w-full sm:ml-72 lg:ml-52 bg-gray-100">
     <div class="lg:pl-30 lg:pr-10 pb-12 pt-5">
       <router-outlet />
     </div>

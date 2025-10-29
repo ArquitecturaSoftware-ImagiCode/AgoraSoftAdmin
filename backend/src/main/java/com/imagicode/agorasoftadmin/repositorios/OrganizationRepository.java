@@ -11,10 +11,9 @@ import org.springframework.stereotype.Repository;
 import com.imagicode.agorasoftadmin.entidades.Organization;
 
 @Repository
-public interface OrganizationRepository extends JpaRepository<Organization, Integer> {
-
-    // Buscar por ClerkOrgId
+public interface OrganizationRepository extends JpaRepository<Organization, Long> {
     Optional<Organization> findByClerkOrgId(String clerkOrgId);
+    List<Organization> findByActivoTrue();
 
     // Buscar por nombre
     @Query("SELECT o FROM Organization o WHERE o.name = :name")

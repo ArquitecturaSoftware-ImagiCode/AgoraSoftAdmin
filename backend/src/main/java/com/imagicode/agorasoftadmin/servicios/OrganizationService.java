@@ -1,6 +1,6 @@
 package com.imagicode.agorasoftadmin.servicios;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,80 +12,54 @@ import com.imagicode.agorasoftadmin.repositorios.OrganizationRepository;
 @Service
 public class OrganizationService {
 
-    private final OrganizationRepository organizationRepository;
+    private final OrganizationRepository organizacionsRepository;
 
-    public OrganizationService(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository;
+    public OrganizationService(OrganizationRepository organizacionsRepository) {
+        this.organizacionsRepository = organizacionsRepository;
     }
 
-    public List<Organization> obtenerTodasLasOrganizaciones() {
-        return organizationRepository.findAll();
+    // 🔹 Obtener todas las organizaciones
+    public List<Organization> obtenerOrganizaciones() {
+        return organizacionsRepository.findAll();
     }
 
-    public Optional<Organization> obtenerOrganizacionPorId(Integer id) {
-        return organizationRepository.findById(id);
+    // 🔹 Obtener una organización por ID
+    public Optional<Organization> obtenerOrganizacionPorId(Long id) {
+        return organizacionsRepository.findById(id);
     }
 
-    public Optional<Organization> obtenerOrganizacionPorClerkOrgId(String clerkOrgId) {
-        return organizationRepository.findByClerkOrgId(clerkOrgId);
+    // 🔹 Obtener una organización por su ClerkOrgId
+    public Optional<Organization> obtenerPorClerkOrgId(String clerkOrgId) {
+        return organizacionsRepository.findByClerkOrgId(clerkOrgId);
     }
 
-    public Organization crearOrganizacion(Organization organization) {
-        organization.setCreatedAt(LocalDateTime.now());
-        return organizationRepository.save(organization);
+    // 🔹 Crear una nueva organización
+    public Organization crearOrganizacion(Organization organizacion) {
+        return organizacionsRepository.save(organizacion);
     }
 
-    public Organization actualizarOrganizacion(Organization organization) {
-        organization.setUpdatedAt(LocalDateTime.now());
-        return organizationRepository.save(organization);
+    // 🔹 Actualizar una organización existente
+    public Organization actualizarOrganizacion(Organization organizacion) {
+        return organizacionsRepository.save(organizacion);
     }
 
-    public void eliminarOrganizacion(Integer id) {
-        organizationRepository.deleteById(id);
+    // 🔹 Eliminar una organización por ID
+    public void eliminarOrganizacion(Long id) {
+        organizacionsRepository.deleteById(id);
     }
 
-    public List<Organization> obtenerOrganizacionesPorNombre(String name) {
-        return organizationRepository.findByName(name);
-    }
-
-    public List<Organization> obtenerOrganizacionesPorOwner(Integer ownerId) {
-        return organizationRepository.findByOwnerId(ownerId);
-    }
-
+    // 🔹 Obtener todas las organizaciones activas
     public List<Organization> obtenerOrganizacionesActivas() {
-        return organizationRepository.findActiveOrganizations();
+        return organizacionsRepository.findByActivoTrue();
     }
 
-    public List<Organization> obtenerOrganizacionesInactivas() {
-        return organizationRepository.findInactiveOrganizations();
-    }
-
-    public boolean existePorClerkOrgId(String clerkOrgId) {
-        return organizationRepository.existsByClerkOrgId(clerkOrgId);
-    }
-
-    public boolean existePorNombre(String name) {
-        return organizationRepository.existsByName(name);
-    }
-
-    public Organization activarOrganizacion(Integer id) {
-        Optional<Organization> orgOpt = organizationRepository.findById(id);
-        if (orgOpt.isPresent()) {
-            Organization organization = orgOpt.get();
-            organization.setIsActive(true);
-            organization.setUpdatedAt(LocalDateTime.now());
-            return organizationRepository.save(organization);
-        }
-        return null;
-    }
-
-    public Organization desactivarOrganizacion(Integer id) {
-        Optional<Organization> orgOpt = organizationRepository.findById(id);
-        if (orgOpt.isPresent()) {
-            Organization organization = orgOpt.get();
-            organization.setIsActive(false);
-            organization.setUpdatedAt(LocalDateTime.now());
-            return organizationRepository.save(organization);
+    // 🔹 Cambiar el estado activo/inactivo
+    public Organization cambiarEstadoOrganizacion(Long id, boolean activo) {
+        Optional<Organization> optionalOrg = organizacionsRepository.findById(id);
+        if (optionalOrg.isPresent()) {
+            Organization organizacion = optionalOrg.get();
+            organizacion.setActivo(activo);
+            return organizacionsRepository.save(organizacion);
         }
         return null;
     }
