@@ -76,6 +76,7 @@ public class ModuloDTO {
         this.precioMensual = precioMensual;
     }
 
+
     public Boolean getActivo() {
         return activo;
     }

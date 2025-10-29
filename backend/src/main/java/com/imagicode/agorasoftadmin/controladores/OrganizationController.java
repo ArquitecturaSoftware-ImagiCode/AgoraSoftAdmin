@@ -53,10 +53,10 @@ public class OrganizationController {
 
     try {
         String clerkUserId = (String) request.getAttribute("clerkUserId");
-        // if (clerkUserId == null) {
-        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        //             .body(crearRespuestaError("No autorizado"));
-        // }
+        if (clerkUserId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(crearRespuestaError("No autorizado"));
+        }
 
         return organizationService.obtenerOrganizacionPorId(id)
                 .<ResponseEntity<?>>map(ResponseEntity::ok) // 🔹 Esto fuerza el tipo genérico correcto
@@ -79,11 +79,11 @@ public class OrganizationController {
             HttpServletRequest request) {
 
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             return organizationService.obtenerPorClerkOrgId(clerkOrgId)
                     .<ResponseEntity<?>>map(ResponseEntity::ok) // 🔹 Esto fuerza el tipo genérico correcto
@@ -108,11 +108,11 @@ public class OrganizationController {
             HttpServletRequest request) {
 
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             Organization organizacion = new Organization();
             organizacion.setClerkOrgId(dto.getClerkOrgId());
@@ -143,11 +143,11 @@ public class OrganizationController {
             HttpServletRequest request) {
 
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             Optional<Organization> orgOpt = organizationService.obtenerOrganizacionPorId(id);
             if (orgOpt.isEmpty()) {
@@ -180,11 +180,11 @@ public class OrganizationController {
             HttpServletRequest request) {
 
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             Organization actualizada = organizationService.cambiarEstadoOrganizacion(id, activo);
             if (actualizada == null) {
@@ -207,11 +207,11 @@ public class OrganizationController {
     @GetMapping("/activas")
     public ResponseEntity<?> obtenerOrganizacionesActivas(HttpServletRequest request) {
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             List<Organization> activas = organizationService.obtenerOrganizacionesActivas();
             return ResponseEntity.ok(activas);
@@ -232,11 +232,11 @@ public class OrganizationController {
             HttpServletRequest request) {
 
         try {
-            // String clerkUserId = (String) request.getAttribute("clerkUserId");
-            // if (clerkUserId == null) {
-            //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-            //             .body(crearRespuestaError("No autorizado"));
-            // }
+            String clerkUserId = (String) request.getAttribute("clerkUserId");
+            if (clerkUserId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(crearRespuestaError("No autorizado"));
+            }
 
             organizationService.eliminarOrganizacion(id);
             return ResponseEntity.ok(Map.of("mensaje", "Organización eliminada correctamente"));

@@ -1,0 +1,216 @@
+<main>
+  <div class="flex justify-between items-center">
+    <h1 class="text-3xl font-bold">Modulos</h1>
+
+    <button class="btn bg-blue-900 text-white" (click)="abrirModalCrear()">
+      <lucide-angular [img]="PlusIcon" class="size-5"></lucide-angular>
+      Agregar Modulo (Rol)
+    </button>
+
+    <!-- Modal Crear -->
+    <dialog #modalCrear id="modalCrear" class="modal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Creacion de Modulos</h3>
+        <p class="py-4">Agrega el rol, la descripción y el estado actual del módulo</p>
+
+        <form [formGroup]="moduloForm" (ngSubmit)="onSubmit()">
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Título Rol/Modulo</legend>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="input input-bordered w-full"
+              placeholder="Ej. Proveedor"
+            />
+            <p class="text-red-500 text-sm" *ngIf="campoInvalido('nombre')">
+              El nombre es obligatorio (mínimo 3 caracteres)
+            </p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Descripción del Módulo</legend>
+            <textarea
+              class="textarea textarea-bordered w-full"
+              formControlName="descripcion"
+              placeholder="Ej. El módulo realiza acciones de x, y, z"
+            ></textarea>
+            <p class="text-red-500 text-sm" *ngIf="campoInvalido('descripcion')">
+              La descripción es obligatoria (mínimo 10 caracteres)
+            </p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Icono del Módulo</legend>
+            <input
+              type="text"
+              formControlName="icono"
+              class="input input-bordered w-full"
+              placeholder="Ej. fa-user"
+            />
+            <p class="text-red-500 text-sm" *ngIf="campoInvalido('icono')">
+              El icono es obligatorio
+            </p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Precio Mensual</legend>
+            <input
+              type="number"
+              step="0.01"
+              formControlName="precioMensual"
+              class="input input-bordered w-full"
+              placeholder="Ej. 19.99"
+            />
+            <p class="text-red-500 text-sm" *ngIf="campoInvalido('precioMensual')">
+              El precio mensual es obligatorio
+            </p>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend class="fieldset-legend">Estado del Módulo</legend>
+            <select class="select select-bordered w-full" formControlName="activo">
+              <option value="" disabled selected>Escoge el estado</option>
+              <option [value]="true">Habilitado</option>
+              <option [value]="false">Deshabilitado</option>
+            </select>
+            <p class="text-red-500 text-sm" *ngIf="campoInvalido('activo')">
+              Debes seleccionar un estado
+            </p>
+          </fieldset>
+
+          <div class="flex justify-end gap-2 mt-4">
+            <button
+              class="btn bg-blue-900 text-white"
+              type="submit"
+              [disabled]="moduloForm.invalid"
+            >
+              Agregar Módulo
+            </button>
+            <button type="button" class="btn" (click)="cerrarModalCrear()">Cerrar</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  </div>
+
+  <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Rol</th>
+          <th>Descripcion</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let modulo of modulos; let i = index">
+          <th>{{ i + 1 }}</th>
+          <td>{{ modulo.nombre }}</td>
+          <td>{{ modulo.descripcion }}</td>
+
+          <td>
+            <span
+              class="px-2 py-1 rounded-full text-white"
+              [ngClass]="modulo.activo ? 'bg-green-400' : 'bg-red-400'"
+            >
+              {{ modulo.activo ? 'Habilitado' : 'Deshabilitado' }}
+            </span>
+          </td>
+
+          <td class="flex gap-2">
+            <!-- Botón Editar -->
+            <button class="btn" (click)="abrirModalEditar(modulo)">
+              Editar
+            </button>
+            
+            <!-- Botón Toggle Estado -->
+            <button 
+              class="btn" 
+              [ngClass]="modulo.activo ? 'btn-error' : 'btn-success'"
+              (click)="toggleEstadoModulo(modulo.id)"
+            >
+              {{ modulo.activo ? 'Desactivar' : 'Activar' }}
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="!modulos || modulos.length === 0">
+          <td colspan="8" class="text-center py-4 text-gray-500">No hay módulos registrados</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Editar -->
+  <dialog #modalEditar id="modalEditar" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Edición de módulo: {{ moduloEditando?.nombre }}</h3>
+      <p class="py-4">Modifica la información del módulo</p>
+      
+      <form [formGroup]="editarForm" (ngSubmit)="onEditarSubmit()" *ngIf="moduloEditando">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Título Rol/Modulo</legend>
+          <input
+            type="text"
+            formControlName="nombre"
+            class="input input-bordered w-full"
+            placeholder="Ej. Proveedor"
+          />
+          <p class="text-red-500 text-sm" *ngIf="campoInvalidoEditar('nombre')">
+            El nombre es obligatorio (mínimo 3 caracteres)
+          </p>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Descripción del Módulo</legend>
+          <textarea
+            class="textarea textarea-bordered w-full"
+            formControlName="descripcion"
+            placeholder="Ej. El módulo realiza acciones de x, y, z"
+          ></textarea>
+          <p class="text-red-500 text-sm" *ngIf="campoInvalidoEditar('descripcion')">
+            La descripción es obligatoria (mínimo 10 caracteres)
+          </p>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Icono del Módulo</legend>
+          <input
+            type="text"
+            formControlName="icono"
+            class="input input-bordered w-full"
+            placeholder="Ej. fa-user"
+          />
+          <p class="text-red-500 text-sm" *ngIf="campoInvalidoEditar('icono')">
+            El icono es obligatorio
+          </p>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Precio Mensual</legend>
+          <input
+            type="number"
+            step="0.01"
+            formControlName="precioMensual"
+            class="input input-bordered w-full"
+            placeholder="Ej. 19.99"
+          />
+          <p class="text-red-500 text-sm" *ngIf="campoInvalidoEditar('precioMensual')">
+            El precio mensual es obligatorio
+          </p>
+        </fieldset>
+        
+        <div class="modal-action">
+          <button type="submit" class="btn btn-primary" [disabled]="editarForm.invalid">
+            Guardar Cambios
+          </button>
+          <button type="button" class="btn" (click)="cerrarModalEditar()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+</main>

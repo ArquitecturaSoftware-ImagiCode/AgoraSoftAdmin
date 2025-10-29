@@ -14,6 +14,8 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
 import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
+import { ModulosArquitectura } from './pages/arquitectura/modulos-arquitectura/modulos-arquitectura';
+
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
@@ -26,6 +28,10 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: ArquitecturaDashboard,
+      },
+      {
+        path: 'modulos',
+        component: ModulosArquitectura
       },
       // Empleados dentro de arquitectura
       {

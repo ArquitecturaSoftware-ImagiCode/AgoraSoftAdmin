@@ -32,8 +32,8 @@ public interface ModuloRepository extends JpaRepository<Modulo, Long> {
     List<Modulo> findByNombreContaining(@Param("nombre") String nombre);
 
     // Módulos creados por un empleado
-    @Query("SELECT m FROM Modulo m WHERE m.creadoPor.id = :empleadoId")
-    List<Modulo> findModulosCreadosPorEmpleado(@Param("empleadoId") Long empleadoId);
+    // @Query("SELECT m FROM Modulo m WHERE m.creadoPor.id = :empleadoId")
+    // List<Modulo> findModulosCreadosPorEmpleado(@Param("empleadoId") Long empleadoId);
 
     // Módulos más contratados (con cantidad de plazas)
     @Query("SELECT m, COUNT(pm.id) as cantidad FROM Modulo m " +
