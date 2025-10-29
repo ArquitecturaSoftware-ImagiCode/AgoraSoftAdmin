@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
-<<<<<<< HEAD
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Organization } from '../models/Organization';
-=======
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
-
 
 export interface Organization {
   id: number;
@@ -17,36 +11,11 @@ export interface Organization {
   createdAt: string;
   updatedAt: string | null;
 }
->>>>>>> develop2
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrganizationService {
-<<<<<<< HEAD
-  private apiUrl = 'http://localhost:8085/api/organizations';
-
-  constructor(private http: HttpClient) {}
-
-  // GET: traer todas las organizaciones
-  getOrganizations(): Observable<Organization[]> {
-    return this.http.get<Organization[]>(this.apiUrl);
-  }
-
-  // GET: traer organización por id
-  getOrganizationById(id: number): Observable<Organization> {
-    return this.http.get<Organization>(`${this.apiUrl}/${id}`);
-  }
-
-  // GET: traer organizaciones activas
-  getActiveOrganizations(): Observable<Organization[]> {
-    return this.http.get<Organization[]>(`${this.apiUrl}/active`);
-  }
-
-  // GET: traer organizaciones inactivas
-  getInactiveOrganizations(): Observable<Organization[]> {
-    return this.http.get<Organization[]>(`${this.apiUrl}/inactive`);
-=======
   private readonly apiUrl = `${environment.apiBaseUrl}/admin/organizations`;
 
   constructor(private http: HttpClient) {}
@@ -91,6 +60,10 @@ export class OrganizationService {
   // DELETE: eliminar organización
   delete(id: number, token: string): Observable<{ mensaje: string }> {
     return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders(token) });
->>>>>>> develop2
+  }
+
+  // GET: traer organizaciones activas (método legacy para compatibilidad)
+  getActiveOrganizations(token: string): Observable<Organization[]> {
+    return this.http.get<Organization[]>(`${this.apiUrl}/active`, { headers: this.getHeaders(token) });
   }
 }

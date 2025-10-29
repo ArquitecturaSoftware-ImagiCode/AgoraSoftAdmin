@@ -66,7 +66,7 @@ export class ArquitecturaDashboard implements OnInit {
   // Cambiar estado activo/inactivo de la organización usando OrganizationService
   async toggleActivo(org: Organization) {
     try {
-      const updated = await firstValueFrom(
+      const updated: Organization = await firstValueFrom(
         this.organizationService.toggleEstado(org.id, !org.activo, this.token)
       );
       org.activo = updated.activo;

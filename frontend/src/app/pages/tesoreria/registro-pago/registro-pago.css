@@ -1,6 +1,6 @@
 /* Estilos específicos para el formulario de registro de pagos */
 .form-section {
-  @apply mb-6;
+  margin-bottom: 1.5rem; /* mb-6 equivalent */
 }
 
 .form-label {
