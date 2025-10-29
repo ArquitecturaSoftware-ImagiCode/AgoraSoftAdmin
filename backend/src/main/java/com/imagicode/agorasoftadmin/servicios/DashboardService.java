@@ -1,20 +1,22 @@
 package com.imagicode.agorasoftadmin.servicios;
 
-import com.imagicode.agorasoftadmin.dto.DashboardEstadisticasDTO;
-import com.imagicode.agorasoftadmin.dto.ModuloEstadisticaDTO;
-import com.imagicode.agorasoftadmin.dto.PlazaDTO;
-import com.imagicode.agorasoftadmin.entidades.EstadoPlaza;
-import com.imagicode.agorasoftadmin.repositorios.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.imagicode.agorasoftadmin.dto.DashboardEstadisticasDTO;
+import com.imagicode.agorasoftadmin.dto.ModuloEstadisticaDTO;
+import com.imagicode.agorasoftadmin.dto.PlazaDTO;
+import com.imagicode.agorasoftadmin.entidades.EstadoPlaza;
+import com.imagicode.agorasoftadmin.repositorios.EmpleadoRepository;
+import com.imagicode.agorasoftadmin.repositorios.ModuloRepository;
+import com.imagicode.agorasoftadmin.repositorios.PlazaRepository;
+import com.imagicode.agorasoftadmin.repositorios.SuscripcionRepository;
 
 @Service
 public class DashboardService {

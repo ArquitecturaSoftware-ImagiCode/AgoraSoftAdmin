@@ -14,7 +14,6 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
 import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
-
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
   { path: 'login', component: SignInPage },
@@ -28,8 +27,26 @@ export const routes: Routes = [
         path: 'dashboard',
         component: ArquitecturaDashboard,
       },
+      // Empleados dentro de arquitectura
+      {
+        path: 'empleados/registro',
+        loadComponent: () =>
+          import('./pages/empleados/registro-empleado/registro-empleado.component').then(
+            (m) => m.RegistroEmpleadoComponent
+          ),
+      },
+      {
+        path: 'empleados/lista',
+        loadComponent: () =>
+          import('./pages/empleados/lista-empleados/lista-empleados.component').then(
+            (m) => m.ListaEmpleadosComponent
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+
+  // Auditoria
   {
     path: 'auditoria',
     component: AuditoriaLayout,
@@ -40,8 +57,11 @@ export const routes: Routes = [
         path: 'dashboard',
         component: AuditoriaDashboard,
       },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+
+  // Planeacion
   {
     path: 'planeacion',
     component: PlaneacionLayout,
@@ -52,8 +72,11 @@ export const routes: Routes = [
         path: 'dashboard',
         component: PlaneacionDashboard,
       },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+
+  // Soporte
   {
     path: 'soporte',
     component: SoporteLayout,
@@ -83,6 +106,17 @@ export const routes: Routes = [
         path: 'dashboard',
         component: TesoreriaDashboard,
       },
+      {
+        path: 'empleados',
+        children: [
+          { path: 'registro', component: RegistroEmpleadoComponent },
+          { path: 'lista', component: ListaEmpleadosComponent },
+        ],
+      },
     ],
   },
+
+  // Default & fallback
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', redirectTo: '' },
 ];

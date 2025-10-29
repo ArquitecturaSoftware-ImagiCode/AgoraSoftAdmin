@@ -9,11 +9,9 @@ export class AuthService {
 
   constructor() {
     this.clerk = new Clerk('pk_test_YWNjZXB0ZWQtdGVybWl0ZS05MS5jbGVyay5hY2NvdW50cy5kZXYk');
-
     this.initializeClerk();
   }
 
-  /** Inicializa Clerk y escucha cambios de sesión */
   private async initializeClerk() {
     await this.clerk.load();
     this.signedIn$.next(this.clerk.isSignedIn);
@@ -23,12 +21,10 @@ export class AuthService {
     });
   }
 
-  /** Observable del estado de sesión */
   getSignedInStatus(): Observable<boolean> {
     return this.signedIn$.asObservable();
   }
 
-  /** Registro con rol y plaza */
   async signUp(
     firstName: string,
     lastName: string,
@@ -42,36 +38,47 @@ export class AuthService {
       lastName,
       emailAddress: email,
       password,
-      unsafeMetadata: { role, plaza }, // 👈 metadata personalizada
+      unsafeMetadata: { role, plaza },
     });
   }
 
-  /** Enviar código de verificación */
   async sendVerification() {
     return this.clerk?.client?.signUp.prepareEmailAddressVerification();
   }
 
-  /** Verificar código y activar sesión */
   async verifyEmail(code: string) {
-    const signUpAttempt = await this.clerk?.client?.signUp.attemptEmailAddressVerification({
-      code,
-    });
-
+    const signUpAttempt = await this.clerk?.client?.signUp.attemptEmailAddressVerification({ code });
     if (signUpAttempt?.status === 'complete') {
       await this.clerk.setActive({ session: signUpAttempt.createdSessionId });
       this.signedIn$.next(true);
     }
-
     return signUpAttempt;
   }
 
   async getToken(): Promise<string | null> {
-    const session = await this.clerk?.session;
-    const token = session?.getToken();
-    return token === undefined ? null : token;
+    try {
+      const session = await this.clerk?.session;
+      if (!session) return null;
+      const token = await session.getToken();
+      console.log('[AuthService] Token obtenido:', token);
+      return token ?? null;
+    } catch (error) {
+      console.error('[AuthService] Error obteniendo token:', error);
+      return null;
+    }
   }
 
-  /** Inicio de sesión */
+  /** 🔹 NUEVO: obtener el ID del usuario actual */
+  async getUserId(): Promise<string | null> {
+    try {
+      const user = await this.clerk.user;
+      return user?.id || null;
+    } catch (error) {
+      console.error('[AuthService] Error obteniendo userId:', error);
+      return null;
+    }
+  }
+
   async signIn(email: string, password: string) {
     const signInAttempt = await this.clerk?.client?.signIn.create({
       identifier: email,
@@ -82,28 +89,23 @@ export class AuthService {
       await this.clerk.setActive({ session: signInAttempt.createdSessionId });
       this.signedIn$.next(true);
     }
-
     return signInAttempt;
   }
 
-  /** Cerrar sesión */
   async signOut() {
     await this.clerk.signOut();
     this.signedIn$.next(false);
   }
 
-  /** Versión síncrona */
   isSignedIn(): boolean {
     return this.clerk.isSignedIn;
   }
 
-  /** Obtener rol actual del usuario */
   async getUserRole(): Promise<string | undefined> {
     const user = await this.clerk.user;
     return user?.unsafeMetadata?.['role'] as string | undefined;
   }
 
-  /** Obtener instancia de Clerk (por si la necesitas) */
   getClerkInstance(): Clerk {
     return this.clerk;
   }
