@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Empleado, CrearEmpleadoDTO, ActualizarEmpleadoDTO, RolEmpleado } from '../models/empleado'; 
 import { environment } from '../../environments/environments';
+import { AuthService } from './auth.service';
 
-export interface Empleado {
-  id?: number;
-  nombre: string;
-  apellido: string;
-  correo: string;
-  telefono?: string;
-  rol: string;
-  activo?: boolean;
-  fechaIngreso?: string;
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class EmpleadoService {
-  private readonly baseUrl = `${environment.apiBaseUrl}/empleado`;
+  private apiUrl = `${environment.apiBaseUrl}/admin/empleados`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getEmpleados(): Observable<Empleado[]> {
-    return this.http.get<Empleado[]>(`${this.baseUrl}`);
+  crearEmpleado(empleado: Empleado, token?: string): Observable<Empleado> {
+  let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
   }
-
-  crearEmpleado(payload: Partial<Empleado>): Observable<Empleado> {
-    return this.http.post<Empleado>(`${this.baseUrl}`, payload);
-  }
+  return this.http.post<Empleado>(this.apiUrl, empleado, { headers });
 }
 
-
+getEmpleados(token?: string): Observable<Empleado[]> {
+  let headers = new HttpHeaders();
+  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+  return this.http.get<Empleado[]>(this.apiUrl, { headers });
+}
+}

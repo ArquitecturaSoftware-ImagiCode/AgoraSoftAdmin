@@ -1,6 +1,7 @@
 package com.imagicode.agorasoftadmin.dto;
 
 import com.imagicode.agorasoftadmin.entidades.RolEmpleado;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +21,7 @@ public class CrearEmpleadoDTO {
     @NotNull(message = "El rol es obligatorio")
     private RolEmpleado rol;
 
-    @NotBlank(message = "El departamento es obligatorio")
+    //Como frontend no manda variable departamento, no hay razon para que NotBlank o NotNull
     private String departamento;
 
     private String telefono;
@@ -30,12 +31,11 @@ public class CrearEmpleadoDTO {
     }
 
     public CrearEmpleadoDTO(String nombre, String apellido, String correo,
-            RolEmpleado rol, String departamento) {
+            RolEmpleado rol) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.correo = correo;
         this.rol = rol;
-        this.departamento = departamento;
     }
 
     // Getters y Setters

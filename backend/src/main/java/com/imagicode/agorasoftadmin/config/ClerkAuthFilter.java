@@ -1,6 +1,7 @@
 package com.imagicode.agorasoftadmin.config;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,9 +22,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.List;
-import java.util.Arrays;
-
 
 @Component
 public class ClerkAuthFilter implements Filter {
@@ -34,6 +32,28 @@ public class ClerkAuthFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        
+        String path = httpRequest.getRequestURI();
+        System.out.println("[ClerkAuthFilter] Request path: " + path);
+
+        // Lista de rutas públicas (no requieren token)
+        List<String> publicPaths = Arrays.asList(
+            "/api/admin/plazas/public",
+            "/api/admin/plazas/all",
+            "/api/admin/plazas/pendientes",
+            "/api/plazas/public",
+            "/api/health",
+            "/api/status"
+        );
+
+        // Si la ruta está en la lista pública, se omite la autenticación
+        if (publicPaths.contains(path)) {
+            System.out.println("[ClerkAuthFilter] Ruta pública detectada: " + path);
+            chain.doFilter(request, response);
+            return;
+        }
+
 
         // 🔹 Leer Authorization Header
         String authHeader = httpRequest.getHeader("Authorization");

@@ -28,7 +28,7 @@ public class Organization {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "\"OwnerId\"", nullable = false)
     @JsonIgnore 
-    private Usuario propietario;
+    private User propietario;
 
     @Column(name = "\"IsActive\"", nullable = false)
     private Boolean activo = false;
@@ -44,7 +44,7 @@ public class Organization {
     }
 
     // Constructor personalizado
-    public Organization(String clerkOrgId, String nombre, Usuario propietario) {
+    public Organization(String clerkOrgId, String nombre, User propietario) {
         this.clerkOrgId = clerkOrgId;
         this.nombre = nombre;
         this.propietario = propietario;
@@ -77,11 +77,11 @@ public class Organization {
         this.nombre = nombre;
     }
 
-    public Usuario getPropietario() {
+    public User getPropietario() {
         return propietario;
     }
 
-    public void setPropietario(Usuario propietario) {
+    public void setPropietario(User propietario) {
         this.propietario = propietario;
     }
 
@@ -108,26 +108,4 @@ public class Organization {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<OrganizationModulo> modulos = new HashSet<>();
-
-    // Getter y Setter
-    public Set<OrganizationModulo> getModulos() {
-        return modulos;
-    }
-
-    public void setModulos(Set<OrganizationModulo> modulos) {
-        this.modulos = modulos;
-    }
-
-    // Método helper para obtener módulos activos
-    public Set<Modulo> getModulosActivos() {
-        return modulos.stream()
-                .filter(OrganizationModulo::getActivo)
-                .map(OrganizationModulo::getModulo)
-                .collect(Collectors.toSet());
-    }
-
-} 
+}
