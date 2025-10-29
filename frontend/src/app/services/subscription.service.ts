@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Subscription } from '../models/Subscription';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
-  private apiUrl = 'http://localhost:8085/api/subscriptions';
+  private apiUrl = `${environment.apiBaseUrl}/subscriptions`;
 
   constructor(private http: HttpClient) {}
 
