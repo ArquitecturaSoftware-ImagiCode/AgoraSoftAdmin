@@ -29,7 +29,12 @@ export class OrganizationService {
 
   // GET: todas las organizaciones
   getAll(token: string): Observable<Organization[]> {
-    return this.http.get<Organization[]>(`${this.apiUrl}/all`, { headers: this.getHeaders(token) });
+    const url = `${this.apiUrl}/all`;
+    console.log('[OrganizationService] getAll - URL:', url);
+    console.log('[OrganizationService] getAll - Token length:', token?.length || 0);
+    console.log('[OrganizationService] getAll - Headers:', this.getHeaders(token));
+    
+    return this.http.get<Organization[]>(url, { headers: this.getHeaders(token) });
   }
 
   // GET: organización por ID

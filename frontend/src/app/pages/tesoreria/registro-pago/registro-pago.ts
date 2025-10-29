@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HistorialPagoService } from '../../../services/historial-pago.service';
-import { OrganizationService } from '../../../services/organization.service';
+import { OrganizationService, Organization } from '../../../services/organization.service';
+import { AuthService } from '../../../services/auth.service';
 import { HistorialPago } from '../../../models/HistorialPago';
-import { Organization } from '../../../models/Organization';
 import { TipoPago, EstadoTransaccion } from '../../../models/Enums';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-registro-pago',
@@ -19,6 +20,7 @@ export class RegistroPagoComponent implements OnInit {
   organizaciones: Organization[] = [];
   tiposPago = Object.values(TipoPago);
   metodosPago = ['TRANSFERENCIA', 'EFECTIVO', 'TARJETA', 'CHEQUE'];
+  token: string = '';
   
   cargandoOrganizaciones: boolean = true;
   enviando: boolean = false;
@@ -27,11 +29,24 @@ export class RegistroPagoComponent implements OnInit {
 
   constructor(
     private historialPagoService: HistorialPagoService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit() {
-    this.cargarOrganizaciones();
+  async ngOnInit() {
+    // Obtener token de autenticación
+    if (!this.authService.isSignedIn()) {
+      console.warn('Usuario no autenticado');
+      return;
+    }
+    
+    this.token = (await this.authService.getToken()) || '';
+    if (!this.token) {
+      console.error('No se obtuvo un token válido.');
+      return;
+    }
+    
+    await this.cargarOrganizaciones();
     this.inicializarFormulario();
   }
 
@@ -43,19 +58,18 @@ export class RegistroPagoComponent implements OnInit {
     this.nuevoPago.metodoPago = 'TRANSFERENCIA';
   }
 
-  cargarOrganizaciones() {
+  async cargarOrganizaciones() {
     this.cargandoOrganizaciones = true;
-    this.organizationService.getOrganizations().subscribe({
-      next: (organizaciones: Organization[]) => {
-        this.organizaciones = organizaciones;
-        this.cargandoOrganizaciones = false;
-      },
-      error: (error: any) => {
-        console.error('Error al cargar organizaciones:', error);
-        this.mensajeError = 'Error al cargar organizaciones';
-        this.cargandoOrganizaciones = false;
-      }
-    });
+    try {
+      this.organizaciones = await firstValueFrom(
+        this.organizationService.getAll(this.token)
+      );
+      this.cargandoOrganizaciones = false;
+    } catch (error: any) {
+      console.error('Error al cargar organizaciones:', error);
+      this.mensajeError = 'Error al cargar organizaciones';
+      this.cargandoOrganizaciones = false;
+    }
   }
 
   onSubmit() {

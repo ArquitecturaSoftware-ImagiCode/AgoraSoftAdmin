@@ -120,7 +120,7 @@
           (change)="limpiarMensajes()">
           <option value="">Seleccione una organización</option>
           <option *ngFor="let org of organizaciones" [value]="org.id">
-            {{ org.name }}
+            {{ org.nombre }}
           </option>
         </select>
       </div>

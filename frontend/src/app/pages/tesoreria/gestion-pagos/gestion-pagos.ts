@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UsuarioService } from '../../../services/usuario.service';
-import { OrganizationService } from '../../../services/organization.service';
+import { OrganizationService, Organization } from '../../../services/organization.service';
 import { SubscriptionService } from '../../../services/subscription.service';
+import { AuthService } from '../../../services/auth.service';
 import { Usuario } from '../../../models/Usuario';
-import { Organization } from '../../../models/Organization';
 import { Subscription } from '../../../models/Subscription';
+import { firstValueFrom, catchError } from 'rxjs';
 
 type Plaza = {
   id: number;
@@ -39,6 +40,7 @@ export class GestionPagosPage implements OnInit {
   organizaciones: Organization[] = [];
   suscripciones: Subscription[] = [];
   usuarios: UsuarioEmpresa[] = [];
+  token: string = '';
   
   cargandoUsuarios: boolean = true;
   cargandoPlazas: boolean = true;
@@ -51,12 +53,25 @@ export class GestionPagosPage implements OnInit {
   constructor(
     private usuarioService: UsuarioService,
     private organizationService: OrganizationService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private authService: AuthService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    // Obtener token de autenticación
+    if (!this.authService.isSignedIn()) {
+      console.warn('Usuario no autenticado');
+      return;
+    }
+    
+    this.token = (await this.authService.getToken()) || '';
+    if (!this.token) {
+      console.error('No se obtuvo un token válido.');
+      return;
+    }
+    
     this.cargarUsuariosContratistas();
-    this.cargarPlazas();
+    await this.cargarPlazas();
   }
 
   get plazasPendientes(): Plaza[] {
@@ -91,86 +106,91 @@ export class GestionPagosPage implements OnInit {
     });
   }
 
-  cargarPlazas() {
+  async cargarPlazas() {
     this.cargandoPlazas = true;
     
-    // Cargar organizaciones y suscripciones en paralelo
-    this.organizationService.getOrganizations().subscribe({
-      next: (organizaciones: Organization[]) => {
-        this.organizaciones = organizaciones;
-        console.log('Organizaciones cargadas:', organizaciones);
-        
-        // Cargar suscripciones después de cargar organizaciones
-        this.subscriptionService.getSubscriptions().subscribe({
-          next: (suscripciones: Subscription[]) => {
-            this.suscripciones = suscripciones;
-            console.log('Suscripciones cargadas:', suscripciones);
-            
-            // Generar plazas basadas en organizaciones y suscripciones
-            this.generarPlazas();
-            this.cargandoPlazas = false;
-          },
-          error: (error: any) => {
-            console.error('Error al cargar suscripciones:', error);
-            this.cargandoPlazas = false;
-          }
-        });
-      },
-      error: (error: any) => {
-        console.error('Error al cargar organizaciones:', error);
+    try {
+      console.log('[GESTION-PAGOS] Iniciando carga de plazas...');
+      console.log('[GESTION-PAGOS] Token:', this.token ? 'presente' : 'ausente');
+      
+      // Cargar organizaciones
+      console.log('[GESTION-PAGOS] Llamando a getAll con token...');
+      
+      // Usar catchError para capturar errores de manera más detallada
+      const organizacionesObs = this.organizationService.getAll(this.token);
+      
+      this.organizaciones = await firstValueFrom(
+        organizacionesObs.pipe(
+          catchError(error => {
+            console.error('[GESTION-PAGOS] ❌ Error en la petición HTTP:', error);
+            console.error('[GESTION-PAGOS] Status:', error.status);
+            console.error('[GESTION-PAGOS] Error message:', error.message);
+            console.error('[GESTION-PAGOS] Error body:', error.error);
+            throw error;
+          })
+        )
+      );
+      
+      console.log('[GESTION-PAGOS] Organizaciones recibidas:', this.organizaciones);
+      console.log('[GESTION-PAGOS] Cantidad de organizaciones:', this.organizaciones?.length || 0);
+      
+      if (!this.organizaciones || this.organizaciones.length === 0) {
+        console.warn('[GESTION-PAGOS] ⚠️ No se recibieron organizaciones');
         this.cargandoPlazas = false;
+        return;
       }
-    });
+      
+      // Cargar suscripciones
+      console.log('[GESTION-PAGOS] Cargando suscripciones...');
+      this.subscriptionService.getSubscriptions().subscribe({
+        next: (suscripciones: Subscription[]) => {
+          console.log('[GESTION-PAGOS] Suscripciones recibidas:', suscripciones);
+          console.log('[GESTION-PAGOS] Cantidad de suscripciones:', suscripciones?.length || 0);
+          
+          this.suscripciones = suscripciones || [];
+          
+          // Generar plazas basadas en organizaciones y suscripciones
+          this.generarPlazas();
+          this.cargandoPlazas = false;
+        },
+        error: (error: any) => {
+          console.error('[GESTION-PAGOS] Error al cargar suscripciones:', error);
+          // Continuar aunque falle la carga de suscripciones
+          this.suscripciones = [];
+          this.generarPlazas();
+          this.cargandoPlazas = false;
+        }
+      });
+    } catch (error: any) {
+      console.error('[GESTION-PAGOS] Error al cargar organizaciones:', error);
+      console.error('[GESTION-PAGOS] Error details:', error.message);
+      console.error('[GESTION-PAGOS] Error stack:', error.stack);
+      this.cargandoPlazas = false;
+    }
   }
 
   generarPlazas() {
-    console.log('=== DEBUGGING PLAZAS ===');
-    console.log('Organizaciones:', this.organizaciones);
-    console.log('Suscripciones:', this.suscripciones);
+    console.log('=== GENERANDO PLAZAS DESDE ORGANIZACIONES ===');
+    console.log('Total organizaciones:', this.organizaciones.length);
+    console.log('Total suscripciones:', this.suscripciones.length);
     
+    // Generar plazas desde las organizaciones
     this.plazas = this.organizaciones.map((org, index) => {
-      console.log(`\nProcesando organización ${index + 1}:`, org);
-      console.log(`ClerkOrgId: "${org.clerkOrgId}"`);
-      
-      // Buscar suscripción para esta organización
+      // Buscar si esta organización tiene una suscripción (sin importar el estado)
       const suscripcion = this.suscripciones.find(sub => {
-        console.log(`Comparando con suscripción organizationId: "${sub.organizationId}"`);
-        const match = sub.organizationId === org.clerkOrgId;
-        console.log(`¿Coincide? ${match}`);
-        return match;
+        return sub.organizationId === org.clerkOrgId;
       });
 
-      let estadoPago: 'pendiente' | 'pagado' = 'pendiente';
-      let monto = this.PRECIO_STANDAR_COP; // Usar precio estándar de $40 USD
-      let fechaLimite = new Date();
+      // Lógica simple: Si tiene suscripción → pagado, si no → pendiente
+      const estadoPago: 'pendiente' | 'pagado' = suscripcion ? 'pagado' : 'pendiente';
+      
+      const monto = this.PRECIO_STANDAR_COP;
+      const fechaLimite = new Date();
       fechaLimite.setMonth(fechaLimite.getMonth() + 1);
-
-      if (suscripcion) {
-        console.log('Suscripción encontrada:', suscripcion);
-        
-        // Verificar si la suscripción es reciente (menos de un mes)
-        const fechaCreacion = new Date(suscripcion.createdAt!);
-        const unMesAtras = new Date();
-        unMesAtras.setMonth(unMesAtras.getMonth() - 1);
-
-        console.log(`Fecha creación suscripción: ${fechaCreacion}`);
-        console.log(`Un mes atrás: ${unMesAtras}`);
-        console.log(`Status: ${suscripcion.status}`);
-
-        if (fechaCreacion > unMesAtras && (suscripcion.status === 'active' || suscripcion.status === 'pending')) {
-          estadoPago = 'pagado';
-          // Mantener el mismo precio estándar para todas las plazas
-          console.log('✅ Suscripción válida - marcando como pagado');
-        } else {
-          console.log('❌ Suscripción no válida o muy antigua');
-        }
-      } else {
-        console.log('❌ No se encontró suscripción para esta organización');
-      }
 
       const plaza = {
         id: org.id || index + 1,
-        nombre: org.name || `Plaza ${org.id}`,
+        nombre: org.nombre || `Organización ${org.id}`,
         estadoPago,
         monto,
         fechaLimite: fechaLimite.toISOString().split('T')[0],
@@ -178,15 +198,14 @@ export class GestionPagosPage implements OnInit {
         subscription: suscripcion
       };
 
-      console.log('Plaza generada:', plaza);
+      console.log(`Plaza ${index + 1}: ${org.nombre} - Estado: ${estadoPago} ${suscripcion ? '(tiene suscripción)' : '(sin suscripción)'}`);
       return plaza;
     });
 
     console.log('=== RESULTADO FINAL ===');
     console.log('Total plazas:', this.plazas.length);
-    console.log('Plazas pagadas:', this.plazas.filter(p => p.estadoPago === 'pagado').length);
-    console.log('Plazas pendientes:', this.plazas.filter(p => p.estadoPago === 'pendiente').length);
-    console.log('Plazas generadas:', this.plazas);
+    console.log('Plazas pagadas:', this.plazasPagadas.length);
+    console.log('Plazas pendientes:', this.plazasPendientes.length);
   }
 }
 
