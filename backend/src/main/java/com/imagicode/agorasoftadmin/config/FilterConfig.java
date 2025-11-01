@@ -15,4 +15,14 @@ public class FilterConfig {
         registration.setOrder(1);
         return registration;
     }
+
+    @Bean
+    public FilterRegistrationBean<IntakeAuthFilter> intakeAuthFilterRegistration(IntakeAuthFilter filter) {
+        FilterRegistrationBean<IntakeAuthFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(filter);
+        // proteger los endpoints de intake
+        registration.addUrlPatterns("/api/solicitudes", "/api/solicitudes/*");
+        registration.setOrder(2);
+        return registration;
+    }
 }
