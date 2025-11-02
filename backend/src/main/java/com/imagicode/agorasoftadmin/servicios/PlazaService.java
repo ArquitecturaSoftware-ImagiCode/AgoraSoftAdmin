@@ -53,6 +53,12 @@ public class PlazaService {
 
         plaza = plazaRepository.save(plaza);
 
+        // Enviar correo de confirmación de recepción al contacto de la plaza
+        clerkService.enviarCorreoRegistroPlazaRecibido(
+                plaza.getEmailContacto(),
+                plaza.getNombre(),
+                plaza.getRepresentanteLegal());
+
         return convertirADTO(plaza);
     }
 
