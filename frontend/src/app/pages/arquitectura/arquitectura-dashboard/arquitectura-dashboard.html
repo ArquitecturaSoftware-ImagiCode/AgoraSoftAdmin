@@ -238,9 +238,9 @@
     </div>
   </div>
 
-    <!-- Tabla de organizaciones -->
-    <section class="mt-8">
-      <h2 class="text-xl font-semibold mb-4">Organizaciones</h2>
+  <!-- Tabla de organizaciones -->
+  <section class="mt-8">
+    <h2 class="text-xl font-semibold mb-4">Organizaciones</h2>
 
     <ng-container *ngIf="organizations && organizations.length > 0; else sinOrganizaciones">
       <table class="min-w-full border border-gray-300 rounded shadow">
@@ -266,8 +266,8 @@
               </span>
             </td>
 
-              <td class="px-4 py-2 border text-center">{{ org.id }}</td>
-              <td class="px-4 py-2 border">{{ org.nombre }}</td>
+            <td class="px-4 py-2 border text-center">{{ org.id }}</td>
+            <td class="px-4 py-2 border">{{ org.nombre }}</td>
 
             <!--Botón Activar/Desactivar -->
             <td class="px-4 py-2 border text-center">
@@ -306,4 +306,4 @@
       <p class="text-gray-500 italic">No hay organizaciones disponibles.</p>
     </ng-template>
   </section>
-</main>
+</div>
