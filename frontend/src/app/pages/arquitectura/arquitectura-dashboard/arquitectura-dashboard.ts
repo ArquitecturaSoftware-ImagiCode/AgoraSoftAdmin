@@ -7,7 +7,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-arquitectura-dashboard',
   standalone: true,
-  imports: [CommonModule, JsonPipe],
+  imports: [CommonModule],
   templateUrl: './arquitectura-dashboard.html',
   styleUrls: ['./arquitectura-dashboard.css'],
 })
@@ -15,6 +15,10 @@ export class ArquitecturaDashboard implements OnInit {
   token: string = '';
   usuario: any = null;
   organizations: Organization[] = [];
+  sinOrganizaciones = null
+  selectAll: boolean = false;
+  selectedIds: number[] = [];
+
 
   constructor(
     private authService: AuthService,
@@ -63,6 +67,19 @@ export class ArquitecturaDashboard implements OnInit {
     }
   }
 
+  get totalOrganizaciones(): number {
+    return this.organizations.length;
+  }
+
+  get activas(): number {
+    return this.organizations.filter(o => o.activo).length;
+  }
+
+  get inactivas(): number {
+    return this.organizations.filter(o => !o.activo).length;
+  }
+
+
   // Cambiar estado activo/inactivo de la organización usando OrganizationService
   async toggleActivo(org: Organization) {
     try {
@@ -90,4 +107,55 @@ export class ArquitecturaDashboard implements OnInit {
       alert('No se pudo eliminar la organización');
     }
   }
+
+    toggleSelectAll(event: any) {
+    this.selectAll = event.target.checked;
+
+    if (this.selectAll) {
+      this.selectedIds = this.organizations.map(org => org.id);
+    } else {
+      this.selectedIds = [];
+    }
+  }
+
+  toggleSelect(orgId: number, event: any) {
+    if (event.target.checked) {
+      this.selectedIds.push(orgId);
+    } else {
+      this.selectedIds = this.selectedIds.filter(id => id !== orgId);
+    }
+
+    // actualiza el checkbox principal si todos están seleccionados
+    this.selectAll = this.selectedIds.length === this.organizations.length;
+  }
+
+  // 🆕 Acción masiva: cambiar estado
+  async cambiarEstadoSeleccionadas() {
+    if (this.selectedIds.length === 0) return;
+    const confirmar = confirm(`¿Cambiar estado de ${this.selectedIds.length} organización(es)?`);
+    if (!confirmar) return;
+
+    for (const id of this.selectedIds) {
+      const org = this.organizations.find(o => o.id === id);
+      if (org) await this.toggleActivo(org);
+    }
+
+    this.selectedIds = [];
+    this.selectAll = false;
+  }
+
+  // 🆕 Acción masiva: eliminar seleccionadas
+  async eliminarSeleccionadas() {
+    if (this.selectedIds.length === 0) return;
+    const confirmar = confirm(`¿Eliminar ${this.selectedIds.length} organización(es)?`);
+    if (!confirmar) return;
+
+    for (const id of this.selectedIds) {
+      await this.eliminarOrganizacion(id);
+    }
+
+    this.selectedIds = [];
+    this.selectAll = false;
+  }
+
 }
