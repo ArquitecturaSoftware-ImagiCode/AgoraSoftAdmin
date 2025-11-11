@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class EmpleadoService {
@@ -58,9 +60,23 @@ public class EmpleadoService {
         empleado.setApellido(dto.getApellido());
         empleado.setCorreo(dto.getCorreo());
         empleado.setRol(dto.getRol());
-        empleado.setDepartamento(dto.getDepartamento());
+        // Evitar insertar null en la columna 'departamento' (la tabla tiene constraint
+        // NOT NULL).
+        String departamento = dto.getDepartamento();
+        if (departamento == null) {
+            departamento = ""; // valor por defecto vacío para mantener compatibilidad con esquema
+        }
+        empleado.setDepartamento(departamento);
         empleado.setTelefono(dto.getTelefono());
         empleado.setActivo(true);
+
+        // Asegurar que las fechas requeridas por el esquema no sean null
+        if (empleado.getFechaContratacion() == null) {
+            empleado.setFechaContratacion(LocalDate.now());
+        }
+        if (empleado.getFechaCreacion() == null) {
+            empleado.setFechaCreacion(LocalDateTime.now());
+        }
 
         empleado = empleadoRepository.save(empleado);
 
