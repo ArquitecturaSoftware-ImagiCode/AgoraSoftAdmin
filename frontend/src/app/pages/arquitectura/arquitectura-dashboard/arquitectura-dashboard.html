@@ -1,4 +1,4 @@
-<main>
+<div>
   <h1 class="text-3xl font-bold">Dashboard</h1>
 
   <!-- Estadísticas -->
@@ -16,43 +16,33 @@
     </div>
   </div>
 
-  <!-- Tabla principal -->
-  <div class="overflow-x-auto bg-white rounded-lg mt-5 shadow">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>
-            <label>
-              <input 
-                type="checkbox" 
-                class="checkbox" 
-                [checked]="selectAll"
-                (change)="toggleSelectAll($event)" />
-            </label>
-          </th>
-          <th>ID</th>
-          <th>Organización</th>
-          <th>Estado</th>
-          <th>Creación</th>
-          <th>Actualización</th>
-          <th class="text-center">Acciones</th>
-          <th class="text-center">Eliminar</th>
-        </tr>
-      </thead>
+  <!-- Tabla de organizaciones -->
+  <section class="mt-8">
+    <h2 class="text-xl font-semibold mb-4">Organizaciones</h2>
 
-      <tbody>
-        <tr *ngFor="let org of organizations" class="hover:bg-gray-50">
-          <th>
-            <label>
-              <input 
-                type="checkbox" 
-                class="checkbox" 
-                [checked]="selectedIds.includes(org.id)"
-                (change)="toggleSelect(org.id, $event)" />
-            </label>
-          </th>
-
-          <th>{{ org.id }}</th>
+    <ng-container *ngIf="organizations && organizations.length > 0; else sinOrganizaciones">
+      <table class="min-w-full border border-gray-300 rounded shadow">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="px-4 py-2 border text-center">Estado</th>
+            <th class="px-4 py-2 border">ID</th>
+            <th class="px-4 py-2 border">Nombre</th>
+            <th class="px-4 py-2 border text-center">Acción</th>
+            <th class="px-4 py-2 border">Creado</th>
+            <th class="px-4 py-2 border">Actualizado</th>
+            <th class="px-4 py-2 border text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let org of organizations" class="hover:bg-gray-50">
+            <!-- Indicador de estado -->
+            <td class="px-4 py-2 border text-center">
+              <span
+                class="inline-block w-4 h-4 rounded-full"
+                [ngClass]="org.activo ? 'bg-green-500' : 'bg-red-500'"
+              >
+              </span>
+            </td>
 
           <td>
             <div class="flex items-center gap-3">
@@ -60,57 +50,41 @@
             </div>
           </td>
 
-          <td>
-            <span class="badge" [ngClass]="org.activo ? 'badge-success' : 'badge-error'">
-              {{ org.activo ? 'Activo' : 'Inactivo' }}
-            </span>
-          </td>
+            <!--Botón Activar/Desactivar -->
+            <td class="px-4 py-2 border text-center">
+              <button
+                (click)="toggleActivo(org)"
+                [ngClass]="
+                  org.activo
+                    ? 'bg-yellow-500 hover:bg-yellow-600'
+                    : 'bg-green-500 hover:bg-green-600'
+                "
+                class="text-white px-3 py-1 rounded transition"
+              >
+                {{ org.activo ? 'Desactivar' : 'Activar' }}
+              </button>
+            </td>
 
-          <td>{{ org.createdAt | date:'short' }}</td>
-          <td>{{ org.updatedAt ? (org.updatedAt | date:'short') : '-' }}</td>
+            <td class="px-4 py-2 border">{{ org.createdAt | date : 'short' }}</td>
+            <td class="px-4 py-2 border">
+              {{ org.updatedAt ? (org.updatedAt | date : 'short') : '-' }}
+            </td>
 
-          <td class="text-center">
-            <button
-              class="btn btn-xs"
-              [ngClass]="org.activo ? 'btn-warning' : 'btn-success'"
-              (click)="toggleActivo(org)">
-              {{ org.activo ? 'Desactivar' : 'Activar' }}
-            </button>
-          </td>
+            <td class="px-4 py-2 border text-center">
+              <button
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                (click)="eliminarOrganizacion(org.id)"
+              >
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
 
-          <td class="text-center">
-            <button
-              class="btn btn-xs btn-error"
-              (click)="eliminarOrganizacion(org.id)">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Acciones en lote -->
-  <div *ngIf="selectedIds.length > 0" class="mt-5 p-4 bg-gray-100 rounded-lg shadow">
-    <p class="text-gray-700 mb-2">
-      {{ selectedIds.length }} organización(es) seleccionada(s)
-    </p>
-
-    <div class="flex gap-2">
-      <button class="btn btn-sm btn-warning" (click)="cambiarEstadoSeleccionadas()">
-        Cambiar estado
-      </button>
-      <button class="btn btn-sm btn-error" (click)="eliminarSeleccionadas()">
-        Eliminar seleccionadas
-      </button>
-    </div>
-  </div>
-</main>
+    <ng-template #sinOrganizaciones>
+      <p class="text-gray-500 italic">No hay organizaciones disponibles.</p>
+    </ng-template>
+  </section>
+</div>

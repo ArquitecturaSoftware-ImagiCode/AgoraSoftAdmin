@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,30 +40,37 @@ public class EmpleadoController {
      * POST /api/admin/empleados
      */
     // EmpleadoController.java
-@PostMapping
-public ResponseEntity<?> crearEmpleado(@RequestBody CrearEmpleadoDTO crearEmpleadoDTO) {
-    System.out.println("[EmpleadoController] Petición recibida en crearEmpleado()");
-    System.out.println("[EmpleadoController] Datos recibidos: " + crearEmpleadoDTO);
+    @PostMapping
+    public ResponseEntity<?> crearEmpleado(@RequestBody CrearEmpleadoDTO crearEmpleadoDTO) {
+        System.out.println("[EmpleadoController] Petición recibida en crearEmpleado()");
+        System.out.println("[EmpleadoController] Datos recibidos: " + crearEmpleadoDTO);
 
-    try {
-        // Llamamos al servicio que devuelve un EmpleadoDTO
-        EmpleadoDTO nuevoEmpleado = empleadoService.crearEmpleado(crearEmpleadoDTO);
-        System.out.println("[EmpleadoController] Empleado creado correctamente: " + nuevoEmpleado.getCorreo());
+        try {
+            // Llamamos al servicio que devuelve un EmpleadoDTO
+            EmpleadoDTO nuevoEmpleado = empleadoService.crearEmpleado(crearEmpleadoDTO);
+            System.out.println("[EmpleadoController] Empleado creado correctamente: " + nuevoEmpleado.getCorreo());
 
-        // Respondemos con el DTO
-        return ResponseEntity.ok(nuevoEmpleado);
+            // Respondemos con el DTO
+            return ResponseEntity.ok(nuevoEmpleado);
 
-    } catch (Exception e) {
-        System.err.println("[EmpleadoController] Error al crear empleado: " + e.getMessage());
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear empleado: " + e.getMessage());
+        } catch (DataIntegrityViolationException dive) {
+            // Error de integridad (constraints DB) — devolver 400 con detalle breve (modo
+            // dev)
+            System.err.println("[EmpleadoController] DataIntegrityViolation: " + dive.getMessage());
+            dive.printStackTrace();
+            Map<String, String> resp = new HashMap<>();
+            resp.put("error", "Constraint violation");
+            resp.put("detail",
+                    dive.getMostSpecificCause() != null ? dive.getMostSpecificCause().getMessage() : dive.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+
+        } catch (Exception e) {
+            System.err.println("[EmpleadoController] Error al crear empleado: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al crear empleado: " + e.getMessage());
+        }
     }
-}
-
-
-
-
 
     /**
      * Obtener todos los empleados
