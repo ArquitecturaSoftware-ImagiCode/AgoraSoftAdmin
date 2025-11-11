@@ -55,7 +55,11 @@ export class OrganizationService {
 
   // POST: cambiar estado activo/inactivo
   toggleEstado(id: number, activo: boolean, token: string): Observable<Organization> {
-    return this.http.post<Organization>(`${this.apiUrl}/${id}/estado?activo=${activo}`, null, { headers: this.getHeaders(token) });
+    return this.http.post<Organization>(
+      `${this.apiUrl}/${id}/estado?activo=${activo}`,
+      {},
+      { headers: this.getHeaders(token) }
+    );
   }
 
   // DELETE: eliminar organización
