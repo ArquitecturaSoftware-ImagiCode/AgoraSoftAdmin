@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { SolicitudService } from '../../../services/solicitud.service';
 import { OrganizationService, Organization } from '../../../services/organization.service';
+import { CommonModule } from '@angular/common';
+import { environment } from '../../../../environments/environments';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -12,51 +14,85 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./arquitectura-dashboard.css'],
 })
 export class ArquitecturaDashboard implements OnInit {
-  token: string = '';
   usuario: any = null;
+  token: string = '';
+  
+  // Para solicitudes (rama Servicio-de-correo-automatico)
+  solicitudes: any[] = [];
+  estadoFiltro: string = 'PENDIENTE';
+  
+  // Para organizaciones (rama develop)
   organizations: Organization[] = [];
-  sinOrganizaciones = null
   selectAll: boolean = false;
   selectedIds: number[] = [];
 
-
   constructor(
     private authService: AuthService,
+    private solicitudService: SolicitudService,
     private organizationService: OrganizationService
   ) {}
 
   async ngOnInit() {
-    // 1️Verificar sesión activa
+    // Verificar sesión activa
     if (!this.authService.isSignedIn()) return;
 
-    // 2Obtener token de sesión
+    // Obtener token
     this.token = (await this.authService.getToken()) || '';
     if (!this.token) {
       console.error('No se obtuvo un token válido.');
       return;
     }
 
-    // Cargar usuario y organizaciones
-    await this.cargarUsuario();
-    await this.cargarOrganizations();
+    // Cargar datos en paralelo
+    await Promise.all([
+      this.cargarUsuario(),
+      this.cargarSolicitudes(),
+      this.cargarOrganizations()
+    ]);
   }
 
   // 🔹 Obtener usuario actual
   async cargarUsuario() {
     try {
-      // Aquí puedes usar el endpoint de usuario directamente con fetch o un servicio
-      const res = await fetch(`/usuario`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+      const response = await fetch(`${environment.apiBaseUrl}/usuario`, {
+        headers: { 
+          Authorization: `Bearer ${this.token}` 
+        },
         credentials: 'include',
       });
-      if (!res.ok) throw new Error('Error al obtener usuario');
-      this.usuario = await res.json();
+      if (!response.ok) throw new Error('Error al obtener usuario');
+      this.usuario = await response.json();
     } catch (error) {
-      console.error('Error al obtener usuario:', error);
+      console.error('Error al cargar usuario:', error);
     }
   }
 
-  // 🔹 Obtener todas las organizaciones usando OrganizationService
+  // 🔹 Obtener solicitudes pendientes (Servicio-de-correo-automatico)
+  async cargarSolicitudes() {
+    try {
+      this.solicitudes = await this.solicitudService.listarSolicitudes(this.estadoFiltro);
+    } catch (error) {
+      console.error('Error al cargar solicitudes:', error);
+    }
+  }
+
+  // 🔹 Cambiar estado de solicitud
+  async cambiarEstado(id: number, nuevoEstado: string) {
+    try {
+      await this.solicitudService.actualizarEstado(
+        id, 
+        nuevoEstado, 
+        this.usuario?.nombre || 'Arquitectura'
+      );
+      await this.cargarSolicitudes(); // Recargar después del cambio
+      alert(`Solicitud ${nuevoEstado.toLowerCase()} correctamente`);
+    } catch (error) {
+      console.error('Error al cambiar estado de solicitud:', error);
+      alert('No se pudo cambiar el estado de la solicitud');
+    }
+  }
+
+  // 🔹 Obtener todas las organizaciones (develop)
   async cargarOrganizations() {
     try {
       this.organizations = await firstValueFrom(
@@ -67,6 +103,7 @@ export class ArquitecturaDashboard implements OnInit {
     }
   }
 
+  // 📊 Getters para estadísticas
   get totalOrganizaciones(): number {
     return this.organizations.length;
   }
@@ -79,8 +116,7 @@ export class ArquitecturaDashboard implements OnInit {
     return this.organizations.filter(o => !o.activo).length;
   }
 
-
-  // Cambiar estado activo/inactivo de la organización usando OrganizationService
+  // 🔹 Cambiar estado activo/inactivo de organización
   async toggleActivo(org: Organization) {
     try {
       const updated = await firstValueFrom(
@@ -93,7 +129,7 @@ export class ArquitecturaDashboard implements OnInit {
     }
   }
 
-  // 🔹 Eliminar organización usando OrganizationService
+  // 🔹 Eliminar organización
   async eliminarOrganizacion(id: number) {
     const confirmar = confirm('¿Seguro que deseas eliminar esta organización?');
     if (!confirmar) return;
@@ -108,28 +144,25 @@ export class ArquitecturaDashboard implements OnInit {
     }
   }
 
-    toggleSelectAll(event: any) {
+  // 🔹 Seleccionar todas las organizaciones
+  toggleSelectAll(event: any) {
     this.selectAll = event.target.checked;
-
-    if (this.selectAll) {
-      this.selectedIds = this.organizations.map(org => org.id);
-    } else {
-      this.selectedIds = [];
-    }
+    this.selectedIds = this.selectAll 
+      ? this.organizations.map(org => org.id) 
+      : [];
   }
 
+  // 🔹 Seleccionar una organización individual
   toggleSelect(orgId: number, event: any) {
     if (event.target.checked) {
       this.selectedIds.push(orgId);
     } else {
       this.selectedIds = this.selectedIds.filter(id => id !== orgId);
     }
-
-    // actualiza el checkbox principal si todos están seleccionados
     this.selectAll = this.selectedIds.length === this.organizations.length;
   }
 
-  // 🆕 Acción masiva: cambiar estado
+  // 🔹 Acción masiva: cambiar estado de seleccionadas
   async cambiarEstadoSeleccionadas() {
     if (this.selectedIds.length === 0) return;
     const confirmar = confirm(`¿Cambiar estado de ${this.selectedIds.length} organización(es)?`);
@@ -144,7 +177,7 @@ export class ArquitecturaDashboard implements OnInit {
     this.selectAll = false;
   }
 
-  // 🆕 Acción masiva: eliminar seleccionadas
+  // 🔹 Acción masiva: eliminar seleccionadas
   async eliminarSeleccionadas() {
     if (this.selectedIds.length === 0) return;
     const confirmar = confirm(`¿Eliminar ${this.selectedIds.length} organización(es)?`);
@@ -157,5 +190,4 @@ export class ArquitecturaDashboard implements OnInit {
     this.selectedIds = [];
     this.selectAll = false;
   }
-
 }

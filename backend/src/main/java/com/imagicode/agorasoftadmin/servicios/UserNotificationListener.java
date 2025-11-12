@@ -54,7 +54,7 @@ public class UserNotificationListener {
 
         String rawPassword = includeRawPassword ? event.getRawPassword() : null;
         model.put("showPassword", includeRawPassword && rawPassword != null);
-        model.put("password", rawPassword == null ? "" : rawPassword);
+        model.put("password", rawPassword != null ? rawPassword : "");
 
         String subject = "Bienvenido a AgoraSoft - Registro exitoso";
         String html = renderer.renderHtml("email/user-registered", model);

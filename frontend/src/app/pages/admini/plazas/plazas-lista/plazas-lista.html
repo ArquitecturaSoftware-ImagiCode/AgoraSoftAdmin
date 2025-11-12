@@ -1,0 +1,38 @@
+<div class="lista-container">
+  <h2>Plazas</h2>
+
+  <div class="toolbar">
+    <input [formControl]="search" placeholder="Buscar por nombre o RUT" />
+  </div>
+
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="table-wrapper" *ngIf="!loading && plazas.length">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Representante</th>
+          <th>RUT</th>
+          <th>Estado</th>
+          <th style="width: 160px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of plazas">
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.representanteLegal }}</td>
+          <td>{{ p.rut || '-' }}</td>
+          <td>{{ p.estado || p.estadoDescripcion }}</td>
+          <td>
+            <button (click)="ver(p.id)">Ver</button>
+            <button *ngIf="p.estado === 'PENDIENTE'" (click)="aprobar(p.id)">Aprobar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && !plazas.length" class="no-data">No se encontraron plazas</div>
+</div>
