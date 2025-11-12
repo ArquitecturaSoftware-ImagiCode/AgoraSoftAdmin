@@ -1,0 +1,19 @@
+<div class="lista-container">
+  <h2>Detalle de plaza</h2>
+
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="plaza" class="detail">
+    <p><strong>Nombre:</strong> {{ plaza.nombre }}</p>
+    <p><strong>Representante:</strong> {{ plaza.representanteLegal }}</p>
+    <p><strong>Contacto:</strong> {{ plaza.emailContacto }} • {{ plaza.telefono }}</p>
+    <p><strong>Dirección:</strong> {{ plaza.direccion }}</p>
+    <p><strong>Estado:</strong> {{ plaza.estado || plaza.estadoDescripcion }}</p>
+
+    <div class="actions">
+      <button (click)="aprobar()">Aprobar / Acciones</button>
+      <button (click)="volver()">Volver</button>
+    </div>
+  </div>
+</div>

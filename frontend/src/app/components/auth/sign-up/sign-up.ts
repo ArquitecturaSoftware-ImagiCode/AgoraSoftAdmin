@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import {environment} from '../../../../environments/environments';
+import { environment } from '../../../../environments/environments';
 
 @Component({
   selector: 'app-sign-up',
@@ -90,12 +90,11 @@ export class SignUp {
             organizacion: 'contratista'
           };
 
-          
           // Enviar al backend
           await fetch(`${environment.apiBaseUrl}/usuarios`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(usuarioBackend)
+            body: JSON.stringify(usuarioBackend),
           });
         }
 
@@ -106,7 +105,7 @@ export class SignUp {
           this.router.navigate(['/dashboard']); // fallback
         }
       }
-      console.log("HI: " + result?.status)
+      console.log('HI: ' + result?.status);
     } catch (err) {
       console.error('Error en verificación:', err);
     }

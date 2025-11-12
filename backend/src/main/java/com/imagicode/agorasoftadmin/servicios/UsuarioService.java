@@ -1,29 +1,83 @@
 package com.imagicode.agorasoftadmin.servicios;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 import com.imagicode.agorasoftadmin.repositorios.UsuarioRepository;
 
-
+/**
+ * Capa de aplicación/servicio para usuarios.
+ * Publica eventos de dominio tras commit para disparar notificaciones.
+ * Delega notificaciones administrativas a AdminNotifierService.
+ */
 @Service
 public class UsuarioService {
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
+    private final ApplicationEventPublisher events;
+    private final AdminNotifierService adminNotifier;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          ApplicationEventPublisher events,
+                          AdminNotifierService adminNotifier) {
         this.usuarioRepository = usuarioRepository;
+        this.events = events;
+        this.adminNotifier = adminNotifier;
+    }
+
+    /**
+     * Crea un usuario sin password cruda (flujo normal con Clerk o externo).
+     */
+    @Transactional
+    public Usuario crearUsuario(Usuario usuario) {
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        // Publica evento para listeners (correo de bienvenida, etc.)
+        // El listener verifica notify.user-registration.enabled
+        events.publishEvent(new UserRegisteredEvent(guardado, null));
+
+        // Notifica al módulo administrativo de forma defensiva (evita NPE)
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", guardado.getId());
+        payload.put("correo", guardado.getCorreo());
+        payload.put("nombre", guardado.getNombre());
+        payload.put("apellido", guardado.getApellido());
+        payload.put("estado", guardado.getEstado() != null ? guardado.getEstado() : "PENDIENTE");
+        payload.put("rol", guardado.getRol());
+        adminNotifier.notifyNuevoRegistro(payload);
+
+        return guardado;
+    }
+
+    /**
+     * Variante para casos donde se necesita incluir la password en texto plano
+     * (solo para desarrollo/testing o correos de credenciales iniciales).
+     */
+    @Transactional
+    public Usuario crearUsuario(Usuario usuario, String rawPasswordOptional) {
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        // Publica evento con password opcional
+        events.publishEvent(new UserRegisteredEvent(guardado, rawPasswordOptional));
+
+        // Notifica al módulo administrativo
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", guardado.getId());
+        payload.put("correo", guardado.getCorreo());
+        payload.put("nombre", guardado.getNombre());
+        payload.put("apellido", guardado.getApellido());
+        payload.put("estado", guardado.getEstado() != null ? guardado.getEstado() : "PENDIENTE");
+        payload.put("rol", guardado.getRol());
+        adminNotifier.notifyNuevoRegistro(payload);
+
+        return guardado;
     }
 
     public List<Usuario> obtenerUsuarios() {
@@ -48,10 +102,6 @@ public class UsuarioService {
 
     public boolean esEmpleado(String clerkUserId) {
         return usuarioRepository.esEmpleado(clerkUserId);
-    }
-
-    public Usuario crearUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
     }
 
     public boolean esRepresentantePlaza(String clerkUserId) {
