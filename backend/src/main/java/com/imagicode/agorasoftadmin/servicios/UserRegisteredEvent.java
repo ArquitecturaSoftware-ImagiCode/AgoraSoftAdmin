@@ -4,12 +4,14 @@ import com.imagicode.agorasoftadmin.entidades.Usuario;
 
 /**
  * Evento de dominio: usuario registrado.
- * Mantener simple y dentro de la capa de servicios para no crear carpetas
- * nuevas.
+ * Se publica con ApplicationEventPublisher.publishEvent(new UserRegisteredEvent(...))
+ * 
+ * Mantener simple y dentro de la capa de servicios para no crear carpetas nuevas.
  */
 public class UserRegisteredEvent {
+
     private final Usuario usuario;
-    private final String rawPassword; // puede ser null (no se usa por defecto)
+    private final String rawPassword; // puede ser null
 
     public UserRegisteredEvent(Usuario usuario, String rawPassword) {
         this.usuario = usuario;
@@ -20,6 +22,11 @@ public class UserRegisteredEvent {
         return usuario;
     }
 
+    /**
+     * El password en texto plano (opcional).
+     * Solo debe usarse para enviar correo de bienvenida con credenciales iniciales.
+     * No debe loguearse ni persistirse.
+     */
     public String getRawPassword() {
         return rawPassword;
     }

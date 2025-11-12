@@ -3,13 +3,16 @@ package com.imagicode.agorasoftadmin.servicios;
 /**
  * DTO de intención para envío de correos.
  * Evita pasar strings sueltos y hace explícito el contrato del envío.
+ *
+ * Campos obligatorios: to, from, subject
+ * Campos opcionales: htmlBody, textBody
  */
 public class EmailMessage {
     private final String to;
     private final String subject;
     private final String from;
-    private final String htmlBody; // opcional
-    private final String textBody; // opcional
+    private final String htmlBody;  // opcional
+    private final String textBody;  // opcional
 
     private EmailMessage(Builder b) {
         this.to = b.to;
@@ -76,7 +79,22 @@ public class EmailMessage {
         }
 
         public EmailMessage build() {
+            // Validaciones básicas
+            if (to == null || to.isBlank()) {
+                throw new IllegalArgumentException("El campo 'to' es obligatorio.");
+            }
+            if (from == null || from.isBlank()) {
+                throw new IllegalArgumentException("El campo 'from' es obligatorio.");
+            }
+            if (subject == null || subject.isBlank()) {
+                throw new IllegalArgumentException("El campo 'subject' es obligatorio.");
+            }
             return new EmailMessage(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "EmailMessage{to='" + to + "', from='" + from + "', subject='" + subject + "'}";
     }
 }

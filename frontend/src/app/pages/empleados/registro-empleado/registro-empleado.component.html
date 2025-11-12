@@ -14,7 +14,12 @@
       <input formControlName="telefono" type="text" />
   
       <label>Rol:</label>
-      <input formControlName="rol" type="text" />
+      <select formControlName="rol" required>
+        <option value="" disabled selected>Selecciona el rol del empleado</option>
+        <option value="SUPER_ADMIN">SUPER ADMIN</option>
+        <option value="ADMIN">ADMIN</option>
+        <option value="TESORERIA">TESORERIA</option>
+      </select>
   
       <button type="submit">Registrar</button>
     </form>

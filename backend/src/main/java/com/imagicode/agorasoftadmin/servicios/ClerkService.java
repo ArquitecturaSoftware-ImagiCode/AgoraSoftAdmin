@@ -2,6 +2,8 @@ package com.imagicode.agorasoftadmin.servicios;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+// import com.imagicode.agorasoftadmin.servicios.EmailMessage;
+// import com.imagicode.agorasoftadmin.servicios.EmailService;
 
 /**
  * Servicio para integración con Clerk y envío de correos asociados a eventos de
@@ -19,9 +21,11 @@ public class ClerkService {
         this.emailService = emailService;
     }
 
+    /**
+     * Crear usuario empleado en Clerk
+     */
     public String crearUsuarioEmpleado(String correo, String nombre, String apellido) {
-        // Integración real con Clerk si aplica (aquí no cambiamos comportamiento
-        // actual)
+        // Integración real con Clerk si aplica (aquí no cambiamos comportamiento actual)
         return "clerk_empleado_" + System.currentTimeMillis();
     }
 
@@ -51,12 +55,12 @@ public class ClerkService {
         emailService.send(msg);
     }
 
-    // Envío real: registro de plaza recibido (nuevo, se invoca desde
-    // PlazaService.crearPlaza)
+    // Envío real: registro de plaza recibido (invocado desde PlazaService.crearPlaza)
     public void enviarCorreoRegistroPlazaRecibido(String correo, String nombrePlaza, String representante) {
         String subject = "Registro de plaza recibido";
-        String body = "Hola " + representante + ",\n\nHemos recibido el registro de la plaza '" + nombrePlaza + "'. " +
-                "Nuestro equipo revisará la información y te notificaremos por este medio.\n\nSaludos,\nAgoraSoft";
+        String body = "Hola " + (representante == null ? "" : representante + ",\n\n")
+                + "Hemos recibido el registro de la plaza '" + nombrePlaza
+                + "'. Nuestro equipo revisará la información y te notificaremos por este medio.\n\nSaludos,\nAgoraSoft";
         EmailMessage msg = EmailMessage.builder()
                 .to(correo)
                 .from(from)
@@ -66,12 +70,11 @@ public class ClerkService {
         emailService.send(msg);
     }
 
-    // Envío real: aprobación de plaza (ya se invoca desde
-    // PlazaService.aprobarPlaza)
+    // Aprobación de plaza (invocado desde PlazaService.aprobarPlaza)
     public void enviarCorreoAprobacionPlaza(String correo, String nombrePlaza, String representante) {
         String subject = "Plaza aprobada";
-        String body = "Hola " + representante + ",\n\nTu plaza '" + nombrePlaza + "' ha sido aprobada. " +
-                "Ya puedes acceder al sistema.\n\nSaludos,\nAgoraSoft";
+        String body = "Hola " + representante + ",\n\nTu plaza '" + nombrePlaza
+                + "' ha sido aprobada. Ya puedes acceder al sistema.\n\nSaludos,\nAgoraSoft";
         EmailMessage msg = EmailMessage.builder()
                 .to(correo)
                 .from(from)
@@ -81,11 +84,11 @@ public class ClerkService {
         emailService.send(msg);
     }
 
-    // Envío real: rechazo de plaza (ya se invoca desde PlazaService.rechazarPlaza)
+    // Rechazo de plaza (invocado desde PlazaService.rechazarPlaza)
     public void enviarCorreoRechazoPlaza(String correo, String nombrePlaza, String motivo) {
         String subject = "Plaza rechazada";
-        String body = "Hola,\n\nTu solicitud para la plaza '" + nombrePlaza + "' fue rechazada.\nMotivo: " + motivo +
-                "\n\nSaludos,\nAgoraSoft";
+        String body = "Hola,\n\nTu solicitud para la plaza '" + nombrePlaza + "' fue rechazada.\nMotivo: "
+                + (motivo == null ? "Sin especificar" : motivo) + "\n\nSaludos,\nAgoraSoft";
         EmailMessage msg = EmailMessage.builder()
                 .to(correo)
                 .from(from)

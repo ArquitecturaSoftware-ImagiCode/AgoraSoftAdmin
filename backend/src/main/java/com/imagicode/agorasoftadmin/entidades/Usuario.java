@@ -1,4 +1,3 @@
-
 package com.imagicode.agorasoftadmin.entidades;
 
 import java.time.LocalDateTime;

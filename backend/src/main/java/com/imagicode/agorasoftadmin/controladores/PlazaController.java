@@ -22,6 +22,13 @@ public class PlazaController {
     @Autowired
     private PlazaService plazaService;
 
+    // @PostMapping("/external")
+    // public ResponseEntity<?> createPlaza(@RequestBody PlazaDTO dto) {
+    //     plazaService.createFromLanding(dto);
+    //     return ResponseEntity.ok().build();
+    // }
+
+
     /**
      * Crear nueva plaza (desde frontend público)
      * POST /api/plazas (sin autenticación)
@@ -30,6 +37,7 @@ public class PlazaController {
     public ResponseEntity<?> crearPlaza(@Valid @RequestBody CrearPlazaDTO dto) {
         try {
             PlazaDTO plazaCreada = plazaService.crearPlaza(dto);
+            System.out.println(plazaCreada);
             return ResponseEntity.status(HttpStatus.CREATED).body(plazaCreada);
 
         } catch (Exception e) {
@@ -42,7 +50,7 @@ public class PlazaController {
      * Obtener todas las plazas
      * GET /api/admin/plazas
      */
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> obtenerTodasLasPlazas(HttpServletRequest request) {
         try {
             String clerkUserId = (String) request.getAttribute("clerkUserId");

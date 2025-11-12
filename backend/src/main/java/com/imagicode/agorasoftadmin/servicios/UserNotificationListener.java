@@ -12,9 +12,10 @@ import org.springframework.transaction.event.TransactionPhase;
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 
 /**
- * Listener de eventos de usuario para notificar por correo el registro.
- * Queda desactivado por propiedad (notify.user-registration.enabled=false por
- * defecto).
+ * Listener de eventos de usuario para notificar por correo el registro
+ * (AFTER_COMMIT).
+ * Queda controlado por la propiedad notify.user-registration.enabled (por
+ * defecto false).
  */
 @Component
 public class UserNotificationListener {
@@ -39,10 +40,8 @@ public class UserNotificationListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onUserRegistered(UserRegisteredEvent event) {
-        if (!userRegistrationEnabled) {
-            // Desactivado por configuración: no enviamos correos en registro de usuario.
-            return;
-        }
+        if (!userRegistrationEnabled)
+            return; // desactivado por config
 
         Usuario u = event.getUsuario();
 

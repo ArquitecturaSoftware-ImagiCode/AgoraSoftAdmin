@@ -1,5 +1,6 @@
 package com.imagicode.agorasoftadmin.servicios;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,32 +15,36 @@ import com.imagicode.agorasoftadmin.repositorios.UsuarioRepository;
 /**
  * Capa de aplicación/servicio para usuarios.
  * Publica eventos de dominio tras commit para disparar notificaciones.
+ * Delega notificaciones administrativas a AdminNotifierService.
  */
 @Service
 public class UsuarioService {
 
-    private final UsuarioRepository repo;
+    private final UsuarioRepository usuarioRepository;
     private final ApplicationEventPublisher events;
     private final AdminNotifierService adminNotifier;
 
-    public UsuarioService(UsuarioRepository repo,
-            ApplicationEventPublisher events,
-            AdminNotifierService adminNotifier) {
-        this.repo = repo;
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          ApplicationEventPublisher events,
+                          AdminNotifierService adminNotifier) {
+        this.usuarioRepository = usuarioRepository;
         this.events = events;
         this.adminNotifier = adminNotifier;
     }
 
+    /**
+     * Crea un usuario sin password cruda (flujo normal con Clerk o externo).
+     */
     @Transactional
     public Usuario crearUsuario(Usuario usuario) {
-        Usuario guardado = repo.save(usuario);
+        Usuario guardado = usuarioRepository.save(usuario);
 
-        // Se publica el evento, pero el listener no enviará correo si
-        // notify.user-registration.enabled=false
+        // Publica evento para listeners (correo de bienvenida, etc.)
+        // El listener verifica notify.user-registration.enabled
         events.publishEvent(new UserRegisteredEvent(guardado, null));
 
-        // Map.of throws NPE if any value is null. Build payload defensively.
-        java.util.Map<String, Object> payload = new java.util.HashMap<>();
+        // Notifica al módulo administrativo de forma defensiva (evita NPE)
+        Map<String, Object> payload = new HashMap<>();
         payload.put("id", guardado.getId());
         payload.put("correo", guardado.getCorreo());
         payload.put("nombre", guardado.getNombre());
@@ -51,52 +56,59 @@ public class UsuarioService {
         return guardado;
     }
 
-    // Variante si en algún flujo se requiere incluir la password cruda (solo dev).
+    /**
+     * Variante para casos donde se necesita incluir la password en texto plano
+     * (solo para desarrollo/testing o correos de credenciales iniciales).
+     */
     @Transactional
     public Usuario crearUsuario(Usuario usuario, String rawPasswordOptional) {
-        Usuario guardado = repo.save(usuario);
-        events.publishEvent(new UserRegisteredEvent(guardado, rawPasswordOptional));
-        Map<String, Object> payload = Map.of(
-                "id", guardado.getId(),
-                "correo", guardado.getCorreo(),
-                "nombre", guardado.getNombre(),
-                "apellido", guardado.getApellido(),
-                "estado", guardado.getEstado(),
-                "rol", guardado.getRol());
+        Usuario guardado = usuarioRepository.save(usuario);
 
+        // Publica evento con password opcional
+        events.publishEvent(new UserRegisteredEvent(guardado, rawPasswordOptional));
+
+        // Notifica al módulo administrativo
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", guardado.getId());
+        payload.put("correo", guardado.getCorreo());
+        payload.put("nombre", guardado.getNombre());
+        payload.put("apellido", guardado.getApellido());
+        payload.put("estado", guardado.getEstado() != null ? guardado.getEstado() : "PENDIENTE");
+        payload.put("rol", guardado.getRol());
         adminNotifier.notifyNuevoRegistro(payload);
+
         return guardado;
     }
 
     public List<Usuario> obtenerUsuarios() {
-        return repo.findAll();
+        return usuarioRepository.findAll();
     }
 
     public Usuario guardarUsuario(Usuario usuario) {
-        return repo.save(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     public Usuario obtenerUsuarioPorId(String id) {
-        return repo.findById(id).orElse(null);
+        return usuarioRepository.findById(id).orElse(null);
     }
 
     public Optional<Usuario> obtenerUsuarioPorCorreo(String correo) {
-        return repo.findByCorreo(correo);
+        return usuarioRepository.findByCorreo(correo);
     }
 
     public Usuario actualizarUsuario(Usuario usuario) {
-        return repo.save(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     public boolean esEmpleado(String clerkUserId) {
-        return repo.esEmpleado(clerkUserId);
+        return usuarioRepository.esEmpleado(clerkUserId);
     }
 
     public boolean esRepresentantePlaza(String clerkUserId) {
-        return repo.esRepresentantePlaza(clerkUserId);
+        return usuarioRepository.esRepresentantePlaza(clerkUserId);
     }
 
     public void eliminarUsuario(String id) {
-        repo.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 }
