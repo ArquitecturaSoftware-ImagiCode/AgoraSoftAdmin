@@ -62,4 +62,10 @@ public class UsuarioController {
     public void eliminarUsuario(@PathVariable String id) {
         usuarioService.eliminarUsuario(id);
     }
+
+    // GET: traer usuarios por organización
+    @GetMapping("/organizacion/{organizacion}")
+    public List<Usuario> obtenerUsuariosPorOrganizacion(@PathVariable String organizacion) {
+        return usuarioService.obtenerUsuariosPorOrganizacion(organizacion);
+    }
 }

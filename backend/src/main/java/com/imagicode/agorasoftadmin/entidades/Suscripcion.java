@@ -1,11 +1,22 @@
 package com.imagicode.agorasoftadmin.entidades;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "suscripciones")
@@ -22,32 +33,25 @@ public class Suscripcion {
     @Column(nullable = false, length = 100)
     private String planActual;
 
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal montoMensual;
+
+    @Column(nullable = false, length = 50)
+    private String metodoPago;
+
     @Column(nullable = false)
     private LocalDate fechaInicio;
 
     @Column(nullable = false)
     private LocalDate proximaRenovacion;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal montoMensual;
-
-    @Column(length = 100)
-    private String metodoPago;
-
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private EstadoPago estadoPago;
 
-    @OneToMany(mappedBy = "suscripcion", cascade = CascadeType.ALL)
-    private List<HistorialPago> historialPagos = new ArrayList<>();
-
-    @Column(nullable = false)
-    private LocalDateTime fechaCreacion;
-
     @Column
     private LocalDateTime fechaActualizacion;
 
-    // Empleado que creó la suscripción (generalmente al aprobar la plaza)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creado_por_empleado_id")
     private Empleado creadoPor;
@@ -55,13 +59,13 @@ public class Suscripcion {
     // Constructores
     public Suscripcion() {
         this.fechaInicio = LocalDate.now();
-        this.proximaRenovacion = this.fechaInicio.plusMonths(1);
-        this.estadoPago = EstadoPago.AL_DIA;
-        this.fechaCreacion = LocalDateTime.now();
+        this.proximaRenovacion = LocalDate.now().plusMonths(1);
+        this.estadoPago = EstadoPago.PENDIENTE;
+        this.fechaActualizacion = LocalDateTime.now();
     }
 
-    public Suscripcion(Plaza plaza, String planActual, BigDecimal montoMensual,
-            String metodoPago, Empleado creadoPor) {
+    public Suscripcion(Plaza plaza, String planActual, BigDecimal montoMensual, 
+                      String metodoPago, Empleado creadoPor) {
         this();
         this.plaza = plaza;
         this.planActual = planActual;
@@ -95,22 +99,6 @@ public class Suscripcion {
         this.planActual = planActual;
     }
 
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(LocalDate fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public LocalDate getProximaRenovacion() {
-        return proximaRenovacion;
-    }
-
-    public void setProximaRenovacion(LocalDate proximaRenovacion) {
-        this.proximaRenovacion = proximaRenovacion;
-    }
-
     public BigDecimal getMontoMensual() {
         return montoMensual;
     }
@@ -127,28 +115,28 @@ public class Suscripcion {
         this.metodoPago = metodoPago;
     }
 
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getProximaRenovacion() {
+        return proximaRenovacion;
+    }
+
+    public void setProximaRenovacion(LocalDate proximaRenovacion) {
+        this.proximaRenovacion = proximaRenovacion;
+    }
+
     public EstadoPago getEstadoPago() {
         return estadoPago;
     }
 
     public void setEstadoPago(EstadoPago estadoPago) {
         this.estadoPago = estadoPago;
-    }
-
-    public List<HistorialPago> getHistorialPagos() {
-        return historialPagos;
-    }
-
-    public void setHistorialPagos(List<HistorialPago> historialPagos) {
-        this.historialPagos = historialPagos;
-    }
-
-    public LocalDateTime getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
     }
 
     public LocalDateTime getFechaActualizacion() {
@@ -168,11 +156,6 @@ public class Suscripcion {
     }
 
     // Métodos auxiliares
-    public void agregarPago(HistorialPago pago) {
-        historialPagos.add(pago);
-        pago.setSuscripcion(this);
-    }
-
     public void renovar() {
         this.proximaRenovacion = this.proximaRenovacion.plusMonths(1);
         this.fechaActualizacion = LocalDateTime.now();

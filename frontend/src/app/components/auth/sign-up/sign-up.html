@@ -41,19 +41,6 @@
 
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Organización</label>
-        <select
-          class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          formControlName="organizacion"
-        >
-          <option disabled value="">Selecciona organización</option>
-          <option *ngFor="let org of organizaciones" [value]="org">{{ org }}</option>
-        </select>
-        <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['organizacion'].errors">
-          Organización es obligatoria
-        </p>
-      </div>
-      <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
         <select
           class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
@@ -65,6 +52,15 @@
         <p class="text-sm text-red-500 mt-1" *ngIf="submitted && f['rol'].errors">
           Rol es obligatorio
         </p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Organización</label>
+        <input
+          type="text"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 text-gray-500"
+          value="contratista"
+          readonly
+        />
       </div>
     </div>
   

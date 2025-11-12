@@ -13,7 +13,7 @@ import { UsuarioService } from '../../services/usuario.service';
 })
 export class UsuarioComponente {
 
-  nuevoUsuario: Usuario = new Usuario(0, '', '');
+  nuevoUsuario: Usuario = new Usuario('', '', '', '', '', '', '', true, new Date(), null);
   usuarios: Usuario[] = [];
 
   constructor(private usuarioService: UsuarioService) {}
