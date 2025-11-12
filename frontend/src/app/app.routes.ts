@@ -18,6 +18,7 @@ import { GestionPagosPage } from './pages/tesoreria/gestion-pagos/gestion-pagos'
 import { RegistroPagoComponent } from './pages/tesoreria/registro-pago/registro-pago';
 import { ReportesComponent } from './pages/reportes/reportes';
 import { ModulosArquitectura } from './pages/arquitectura/modulos-arquitectura/modulos-arquitectura';
+import {AdminLayoutComponent} from './layouts/admin-layout/admin-layout';
 
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },

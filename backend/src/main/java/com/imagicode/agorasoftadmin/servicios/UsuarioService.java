@@ -6,8 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import com.imagicode.agorasoftadmin.entidades.Usuario;
 import com.imagicode.agorasoftadmin.repositorios.UsuarioRepository;
@@ -116,30 +121,32 @@ public class UsuarioService {
         return usuarioRepository.findByOrganizacion(organizacion);
     }
 
+    /**
+     * Notifica a otro módulo (por ejemplo, administrativo) sobre un nuevo registro.
+     */
     private void notificarNuevoRegistro(Usuario usuario) {
-    try {
-        String url = "http://localhost:8082/api/validaciones/nuevo-registro"; // URL del módulo administrativo
+        try {
+            String url = "http://localhost:8082/api/validaciones/nuevo-registro"; // URL del módulo administrativo
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, Object> payload = Map.of(
-            "id", usuario.getId(),
-            "correo", usuario.getCorreo(),
-            "nombre", usuario.getNombre(),
-            "apellido", usuario.getApellido(),
-            "estado", usuario.getEstado(),
-            "rol", usuario.getRol()
-        );
+            Map<String, Object> payload = Map.of(
+                    "id", usuario.getId(),
+                    "correo", usuario.getCorreo(),
+                    "nombre", usuario.getNombre(),
+                    "apellido", usuario.getApellido(),
+                    "estado", usuario.getEstado(),
+                    "rol", usuario.getRol()
+            );
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
-        System.out.println("Evento de nuevo registro enviado al módulo administrativo: " + response.getStatusCode());
-    } catch (Exception e) {
-        System.err.println("Error al notificar nuevo registro: " + e.getMessage());
+            System.out.println("Evento de nuevo registro enviado al módulo administrativo: " + response.getStatusCode());
+        } catch (Exception e) {
+            System.err.println("Error al notificar nuevo registro: " + e.getMessage());
+        }
     }
-
-}
 }
