@@ -44,7 +44,7 @@ public class Empleado {
     @Column(length = 100)
     private String departamento;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_contratacion",nullable = false)
     private LocalDate fechaContratacion;
 
     @Column(nullable = false)
@@ -53,10 +53,10 @@ public class Empleado {
     @Column(length = 15)
     private String telefono;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_creacion",nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column
+    @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
     // Constructores
