@@ -16,28 +16,35 @@ export class ListaEmpleadosComponent implements OnInit {
   cargando = true;
   error = '';
 
-  constructor(private empleadoService: EmpleadoService, private authService: AuthService) {}
+  constructor(
+    private empleadoService: EmpleadoService, 
+    private authService: AuthService
+  ) {}
 
   async ngOnInit() {
-    console.log("[ListaEmpleadosComponent] ngOnInit ejecutado");
-    const token = await this.authService.getToken(); // obtiene el token JWT guardado
-    console.log("[ListaEmpleadosComponent] Token:", token);
+    console.log('[ListaEmpleadosComponent] ngOnInit ejecutado');
+    
+    // Obtener token JWT
+    const token = await this.authService.getToken();
+    console.log('[ListaEmpleadosComponent] Token:', token ? 'Token válido' : 'Sin token');
 
     if (!token) {
       this.error = 'No se encontró el token de autenticación.';
       this.cargando = false;
+      console.error('[ListaEmpleadosComponent] Error: Sin token');
       return;
     }
-    console.log("[ListaEmpleadosComponent] Ejecutando getEmpleados()");
+
+    // Obtener empleados con token
+    console.log('[ListaEmpleadosComponent] Ejecutando getEmpleados()');
     this.empleadoService.getEmpleados(token).subscribe({
       next: (data) => {
-        console.log("[ListaEmpleadosComponent] Respuesta del backend:", data);
+        console.log('[ListaEmpleadosComponent] Respuesta del backend:', data);
         this.empleados = data;
         this.cargando = false;
       },
       error: (err) => {
-        console.error("[ListaEmpleadosComponent] Error al obtener empleados:", err);
-        console.error('Error al obtener empleados:', err);
+        console.error('[ListaEmpleadosComponent] Error al obtener empleados:', err);
         this.error = 'No se pudieron cargar los empleados.';
         this.cargando = false;
       },

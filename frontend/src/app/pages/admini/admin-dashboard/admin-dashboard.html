@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Administrativo</title>
+    <link rel="stylesheet" href="admin-dashboard.css" />
+  </head>
+  <body>
+    <div class="lista-container">
+      <h2>Dashboard administrativo</h2>
+
+      <!-- Loading state -->
+      <div id="loading" style="display: none">Cargando...</div>
+
+      <!-- Error state -->
+      <div id="error" class="error" style="display: none"></div>
+
+      <!-- Cards Grid -->
+      <div id="cards-grid" class="cards-grid" style="display: none">
+        <div class="card" data-route="/admin/plazas">
+          <div class="card-title">Total Plazas</div>
+          <div class="card-value" id="total-plazas">-</div>
+          <div class="card-sub">
+            Activas: <span id="plazas-activas">-</span> | Pendientes:
+            <span id="plazas-pendientes">-</span>
+          </div>
+        </div>
+
+        <div class="card" data-route="/admin/empleados/lista">
+          <div class="card-title">Total Empleados</div>
+          <div class="card-value" id="total-empleados">-</div>
+          <div class="card-sub">Activos: <span id="empleados-activos">-</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ingresos Mensuales</div>
+          <div class="card-value" id="ingresos-mensuales">-</div>
+          <div class="card-sub">Mes actual: <span id="ingresos-mes-actual">-</span></div>
+        </div>
+      </div>
+
+      <!-- Panels Grid -->
+      <div id="panel-grid" class="panel-grid" style="display: none">
+        <section class="panel">
+          <h3>Últimas Plazas</h3>
+          <div id="ultimas-plazas">
+            <div class="no-data">No hay plazas recientes</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Pagos vencidos</h3>
+          <div id="pagos-vencidos">
+            <div class="no-data">Sin vencidos</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+  </body>
+</html>

@@ -37,7 +37,8 @@ public class SecurityConfig {
                 "http://localhost:8085",
                 "http://localhost:4200",
                 "http://localhost:3000",
-                "https://tu-dominio.com"));
+                "https://tu-dominio.com",
+                "https://agorasoftadmin.ngrok.app"));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));

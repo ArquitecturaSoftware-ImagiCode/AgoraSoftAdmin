@@ -22,6 +22,20 @@ export class ArquitecturaLayout {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Método para determinar si una ruta está activa
+  isActiveRoute(route: string): boolean {
+    return this.router.url === route;
+  }
+
+  // Método para obtener las clases CSS del botón según si está activo
+  getButtonClasses(route: string): string {
+    const baseClasses = "flex mt-3 py-3 px-5 rounded-lg gap-2 transition-all duration-300";
+    if (this.isActiveRoute(route)) {
+      return `${baseClasses} bg-white text-blue-900`;
+    } else {
+      return `${baseClasses} text-white hover:text-blue-900 hover:bg-white`;
+    }
+  }
 
   async cerrarSesion() {
     await this.authService.signOut();

@@ -1,8 +1,8 @@
 package com.imagicode.agorasoftadmin.entidades;
 
 public enum EstadoPago {
-    AL_DIA("Al Día"),
     PENDIENTE("Pendiente"),
+    PAGADO("Pagado"),
     VENCIDO("Vencido"),
     CANCELADO("Cancelado");
 

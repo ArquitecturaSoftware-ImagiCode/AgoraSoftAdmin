@@ -45,27 +45,21 @@
         <div class="stat-desc">↗︎ 400 (22%)</div>
       </div>
 
-      <div class="stat">
-        <div class="stat-figure text-secondary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block h-8 w-8 stroke-current"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
-            ></path>
-          </svg>
-        </div>
-        <div class="stat-title">New Registers</div>
-        <div class="stat-value">1,200</div>
-        <div class="stat-desc">↘︎ 90 (14%)</div>
+  <!-- 🔹 Sección de estadísticas generales -->
+  <section class="stats shadow w-full bg-white mb-8">
+    <div class="stat">
+      <div class="stat-figure text-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             class="inline-block h-8 w-8 stroke-current">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
       </div>
+      <div class="stat-title">Descargas</div>
+      <div class="stat-value">31K</div>
+      <div class="stat-desc">Ene 1 - Feb 1</div>
     </div>
+  </section>
 
     <div class="overflow-x-auto bg-white rounded-lg mt-5">
       <table class="table">
@@ -224,22 +218,29 @@
     </ng-template>
   </div>
 
-  <!-- Tabla de organizaciones -->
+  <!-- 🔹 Tabla de Organizaciones -->
   <section class="mt-8">
     <h2 class="text-xl font-semibold mb-4">Organizaciones</h2>
 
     <div *ngIf="organizations.length > 0; else sinOrganizaciones">
       <table class="min-w-full border border-gray-300 rounded shadow">
         <thead class="bg-gray-200">
-          <tr>
-            <th class="px-4 py-2 border text-center">Estado</th>
-            <th class="px-4 py-2 border">ID</th>
-            <th class="px-4 py-2 border">Nombre</th>
-            <th class="px-4 py-2 border text-center">Acción</th>
-            <th class="px-4 py-2 border">Creado</th>
-            <th class="px-4 py-2 border">Actualizado</th>
-            <th class="px-4 py-2 border text-center">Acciones</th>
-          </tr>
+        <tr>
+          <th class="px-4 py-2 border text-center">
+            <input
+              type="checkbox"
+              [checked]="selectAll"
+              (change)="toggleSelectAll($event)"
+              class="checkbox checkbox-sm">
+          </th>
+          <th class="px-4 py-2 border text-center">Estado</th>
+          <th class="px-4 py-2 border">ID</th>
+          <th class="px-4 py-2 border">Nombre</th>
+          <th class="px-4 py-2 border text-center">Acción</th>
+          <th class="px-4 py-2 border">Creado</th>
+          <th class="px-4 py-2 border">Actualizado</th>
+          <th class="px-4 py-2 border text-center">Acciones</th>
+        </tr>
         </thead>
 
         <tbody>
@@ -250,7 +251,7 @@
                 [ngClass]="org.activo ? 'bg-green-500' : 'bg-red-500'"
               >
               </span>
-            </td>
+          </td>
 
             <td class="px-4 py-2 border text-center">{{ org.id }}</td>
 

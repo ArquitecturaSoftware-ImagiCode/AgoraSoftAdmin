@@ -14,7 +14,11 @@ import { PlaneacionLayout } from './layouts/planeacion-layout/planeacion-layout'
 import { SoporteLayout } from './layouts/soporte-layout/soporte-layout';
 import { RegistroEmpleadoComponent } from './pages/empleados/registro-empleado/registro-empleado.component';
 import { ListaEmpleadosComponent } from './pages/empleados/lista-empleados/lista-empleados.component';
+import { GestionPagosPage } from './pages/tesoreria/gestion-pagos/gestion-pagos';
+import { RegistroPagoComponent } from './pages/tesoreria/registro-pago/registro-pago';
+import { ReportesComponent } from './pages/reportes/reportes';
 import { ModulosArquitectura } from './pages/arquitectura/modulos-arquitectura/modulos-arquitectura';
+import {AdminLayoutComponent} from './layouts/admin-layout/admin-layout';
 
 export const routes: Routes = [
   { path: 'register', component: SignUpPage },
@@ -102,6 +106,58 @@ export const routes: Routes = [
       },
     ],
   },
+  // Admin
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'admin' },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admini/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
+      },
+
+      // Empleados (reusando pages/empleados)
+      { path: 'empleados', redirectTo: 'empleados/lista', pathMatch: 'full' },
+      {
+        path: 'empleados/lista',
+        loadComponent: () =>
+          import('./pages/empleados/lista-empleados/lista-empleados.component').then(
+            (m) => m.ListaEmpleadosComponent
+          ),
+      },
+      {
+        path: 'empleados/registro',
+        loadComponent: () =>
+          import('./pages/empleados/registro-empleado/registro-empleado.component').then(
+            (m) => m.RegistroEmpleadoComponent
+          ),
+      },
+
+      {
+        path: 'plazas',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plazas-lista/plazas-lista').then((m) => m.PlazasListaPage),
+      },
+      {
+        path: 'plazas/:id',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plaza-detalle/plaza-detalle').then(
+            (m) => m.PlazaDetallePage
+          ),
+      },
+      {
+        path: 'plazas/:id/aprobar',
+        loadComponent: () =>
+          import('./pages/admini/plazas/plaza-aprobacion/plaza-aprobacion').then(
+            (m) => m.PlazaAprobacionPage
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
   {
     path: 'tesoreria',
     component: TesoreriaLayout,
@@ -111,6 +167,18 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: TesoreriaDashboard,
+      },
+      {
+        path: 'gestion-pagos',
+        component: GestionPagosPage,
+      },
+      {
+        path: 'registro-pago',
+        component: RegistroPagoComponent,
+      },
+      {
+        path: 'reportes',
+        component: ReportesComponent,
       },
       {
         path: 'empleados',

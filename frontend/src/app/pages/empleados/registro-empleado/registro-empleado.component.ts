@@ -15,6 +15,7 @@ import { AuthService } from '../../../services/auth.service';
 export class RegistroEmpleadoComponent {
   empleadoForm: FormGroup;
   mensaje: string = '';
+  enviando: boolean = false; // 🆕 Estado de carga
 
   constructor(
     private fb: FormBuilder,
@@ -31,23 +32,44 @@ export class RegistroEmpleadoComponent {
   }
 
   async registrarEmpleado() {
-    if (this.empleadoForm.valid) {
-      try {
-        // 🔑 Obtener token desde el servicio de autenticación
-        const token = await this.authService.getToken();
-
-        // 📨 Enviar los datos con el token
-        this.empleadoService
-          .crearEmpleado(this.empleadoForm.value, token ?? undefined)
-          .subscribe({
-            next: () => (this.mensaje = 'Empleado registrado con éxito ✅'),
-            error: () => (this.mensaje = 'Error al registrar el empleado ❌'),
-          });
-      } catch (err) {
-        this.mensaje = 'No se pudo obtener token de autenticación ❌';
-      }
-    } else {
+    // Validar formulario
+    if (!this.empleadoForm.valid) {
       this.mensaje = 'Por favor complete los campos requeridos ⚠️';
+      return;
+    }
+
+    this.enviando = true;
+    this.mensaje = '';
+
+    try {
+      // 🔑 Obtener token de autenticación
+      const token = await this.authService.getToken();
+      
+      if (!token) {
+        this.mensaje = 'No se pudo obtener token de autenticación ❌';
+        this.enviando = false;
+        return;
+      }
+
+      // 📨 Enviar datos con el token
+      this.empleadoService
+        .crearEmpleado(this.empleadoForm.value, token)
+        .subscribe({
+          next: () => {
+            this.mensaje = 'Empleado registrado con éxito ✅';
+            this.empleadoForm.reset(); // 🆕 Limpiar formulario tras éxito
+            this.enviando = false;
+          },
+          error: (err) => {
+            console.error('[RegistroEmpleadoComponent] Error al registrar:', err);
+            this.mensaje = 'Error al registrar el empleado ❌';
+            this.enviando = false;
+          },
+        });
+    } catch (err) {
+      console.error('[RegistroEmpleadoComponent] Error obteniendo token:', err);
+      this.mensaje = 'No se pudo obtener token de autenticación ❌';
+      this.enviando = false;
     }
   }
 }

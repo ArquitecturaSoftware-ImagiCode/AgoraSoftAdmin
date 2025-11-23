@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environments';
 
-
 export interface Organization {
   id: number;
   clerkOrgId: string;
@@ -30,7 +29,12 @@ export class OrganizationService {
 
   // GET: todas las organizaciones
   getAll(token: string): Observable<Organization[]> {
-    return this.http.get<Organization[]>(`${this.apiUrl}/all`, { headers: this.getHeaders(token) });
+    const url = `${this.apiUrl}/all`;
+    console.log('[OrganizationService] getAll - URL:', url);
+    console.log('[OrganizationService] getAll - Token length:', token?.length || 0);
+    console.log('[OrganizationService] getAll - Headers:', this.getHeaders(token));
+    
+    return this.http.get<Organization[]>(url, { headers: this.getHeaders(token) });
   }
 
   // GET: organización por ID
@@ -55,11 +59,20 @@ export class OrganizationService {
 
   // POST: cambiar estado activo/inactivo
   toggleEstado(id: number, activo: boolean, token: string): Observable<Organization> {
-    return this.http.post<Organization>(`${this.apiUrl}/${id}/estado?activo=${activo}`, null, { headers: this.getHeaders(token) });
+    return this.http.post<Organization>(
+      `${this.apiUrl}/${id}/estado?activo=${activo}`,
+      {},
+      { headers: this.getHeaders(token) }
+    );
   }
 
   // DELETE: eliminar organización
   delete(id: number, token: string): Observable<{ mensaje: string }> {
     return this.http.delete<{ mensaje: string }>(`${this.apiUrl}/${id}`, { headers: this.getHeaders(token) });
+  }
+
+  // GET: traer organizaciones activas (método legacy para compatibilidad)
+  getActiveOrganizations(token: string): Observable<Organization[]> {
+    return this.http.get<Organization[]>(`${this.apiUrl}/active`, { headers: this.getHeaders(token) });
   }
 }

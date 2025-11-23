@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registro exitoso</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #222;
+      }
+      .card {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 16px;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      .muted {
+        color: #666;
+        font-size: 13px;
+      }
+      .info {
+        margin: 12px 0;
+      }
+      .label {
+        font-weight: bold;
+      }
+      .box {
+        background: #f7f7f7;
+        padding: 10px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>¡Gracias por su registro!</h1>
+      <p>
+        <span th:text="${nombre}">Nombre</span>, ahora usted forma parte de los
+        usuarios registrados de AgoraSoft. Recuerde que este registro es
+        gratuito y le permite obtener más información sobre los servicios de la
+        entidad.
+      </p>
+
+      <h2>Información de acceso</h2>
+      <div class="info">
+        <div class="label">Usuario (correo):</div>
+        <div class="box" th:text="${correo}">usuario@correo.com</div>
+      </div>
+
+      <div class="info" th:if="${showPassword}">
+        <div class="label">Contraseña:</div>
+        <div class="box" th:text="${password}">********</div>
+        <div class="muted">
+          Nota: por seguridad, recomendamos cambiar su contraseña al primer
+          acceso.
+        </div>
+      </div>
+
+      <h2>Datos de registro</h2>
+      <div class="info">
+        <div>
+          <span class="label">Nombre:</span>
+          <span th:text="${nombre}">Nombre</span>
+        </div>
+        <div>
+          <span class="label">Apellido:</span>
+          <span th:text="${apellido}">Apellido</span>
+        </div>
+        <div>
+          <span class="label">Organización:</span>
+          <span th:text="${organizacion}">Org</span>
+        </div>
+        <div>
+          <span class="label">Rol:</span> <span th:text="${rol}">Rol</span>
+        </div>
+        <div>
+          <span class="label">Correo:</span>
+          <span th:text="${correo}">correo</span>
+        </div>
+      </div>
+
+      <p class="muted">
+        Si usted no solicitó este registro, ignore este mensaje.
+      </p>
+    </div>
+  </body>
+</html>
